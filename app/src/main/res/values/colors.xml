@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- light theme color -->
+    <color name="primary">#3050F0</color>
+    <color name="primaryVariant">@color/primary</color>
+    <color name="onPrimary">@color/white</color>
+    <color name="secondary">#e8e800</color>
+    <color name="secondaryVariant">@color/secondary</color>
+    <color name="onSecondary">@color/white</color>
+
+    <!-- light theme color -->
+    <color name="darkPrimary">#404040</color>
+    <color name="darkPrimaryVariant">@color/darkPrimary</color>
+    <color name="darkOnPrimary">@color/primary</color>
+    <color name="darkSecondary">#808080</color>
+    <color name="darkSecondaryVariant">@color/darkSecondary</color>
+    <color name="darkOnSecondary">@color/secondary</color>
+</resources>
