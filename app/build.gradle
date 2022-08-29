@@ -2,26 +2,16 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'dagger.hilt.android.plugin'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    signingConfigs {
-        release {
-            storeFile file(properties.getProperty('SIGNED_STORE_FILE'))
-            storePassword properties.getProperty('SIGNED_STORE_PASSWORD')
-            keyAlias properties.getProperty('SIGNED_KEY_ALIAS')
-            keyPassword properties.getProperty('SIGNED_KEY_PASSWORD')
-        }
-    }
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
-        applicationId "com.acanel.groovinapp"
+        applicationId "io.groovin.sampleapp"
         minSdk 24
-        targetSdk 31
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -35,7 +25,6 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -44,13 +33,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
-        useIR = true
     }
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion '1.2.0'
         kotlinCompilerVersion '1.5.31'
     }
     packagingOptions {
@@ -62,33 +50,33 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.8.0-alpha03")
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.5.0'
-    implementation 'com.google.dagger:hilt-android:2.38.1'
-    kapt 'com.google.dagger:hilt-compiler:2.38.1'
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
 
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.activity:activity-compose:1.4.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.4.0'
-    implementation 'androidx.navigation:navigation-compose:2.5.0-alpha01'
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0"
+    implementation 'androidx.activity:activity-compose:1.6.1'
+    implementation "androidx.compose.material3:material3:1.1.0-alpha03"
+    implementation "androidx.compose.material3:material3-window-size-class:1.1.0-alpha03"
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-compose:2.5.3'
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha05"
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
-    implementation "androidx.datastore:datastore:1.0.0"
-    implementation "androidx.datastore:datastore-preferences:1.0.0"
-    implementation(project(":groovin"))
+    implementation "io.coil-kt:coil-compose:2.2.2"
+    implementation implementation(project(':GroovinCollapsingToolBar'))
+
 
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 }

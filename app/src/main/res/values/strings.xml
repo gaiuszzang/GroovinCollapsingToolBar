@@ -1,10 +1,3 @@
 <resources>
-    <string name="app_name" translatable="false">Groovin</string>
-
-    <string name="intro_header" translatable="false">"Get Recycle\nOur Old VINtage"</string>
-
-    <string name="intro_menu_01">Dialog ShowRoom</string>
-    <string name="intro_menu_02">Screensaver</string>
-
-    <string name="setting_title_clock">Clock Settings</string>
+    <string name="app_name" translatable="false">Groovin Showroom</string>
 </resources>
