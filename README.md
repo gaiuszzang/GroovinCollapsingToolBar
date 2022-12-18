@@ -8,7 +8,16 @@ It will be update soon.
 
 ## Including in your project
 ### Gradle
-Add below codes to **your project**'s `build.gradle`.
+Add below codes to `settings.gradle`.
+```gradle
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+for old gradle version, Add below codes to **your project**'s `build.gradle`.
 ```gradle
 allprojects {
     repositories {
@@ -25,9 +34,92 @@ dependencies {
 ```
 
 
-## How to use
-It will be update soon.
+## Usage
+### CollapsingToolBarLayout
+`CollapsingToolBarLayout` is Composable Scaffold Layout that has a Top bar & content.
+```kotlin
+val collapsingToolBarState = rememberCollapsingToolBarState(
+    toolBarMaxHeight = 200.dp,
+    toolBarMinHeight = 56.dp,
+    collapsingOption = CollapsingOption.EnterAlwaysCollapsed
+)
+CollapsingToolBarLayout(
+    state = collapsingToolBarState,
+    autoSnapOption = AutoSnapOption.NoAutoSnap,
+    toolbar = { toolBarCollapsedInfo ->
+        //TODO : Top Bar
+        TopBarLayout(
+            modifier = Modifier
+                .height(toolBarCollapsedInfo.toolBarHeight)
+        )
+    }
+) { innerPadding ->
+    //TODO : Content
+    ContentLayout(
+        modifier = Modifier
+            .padding(innerPadding)
+    )
+}
+```
 
+####CollapsingToolBarState
+CollapsingToolBar needs `CollapsingToolBarState` instance for store and use its status.
+```kotlin
+val collapsingToolBarState = rememberCollapsingToolBarState(
+    toolBarMaxHeight = 200.dp,
+    toolBarMinHeight = 56.dp,
+    collapsingOption = CollapsingOption.EnterAlwaysCollapsed
+)
+```
+You need to define ToolBar's Min/Max Height. also, You can define the collapsing Options.
+ - CollapsingOption.EnterAlways
+ - CollapsingOption.EnterAlwaysCollapsed `default`
+
+####AutoSnapOption
+AutoSnap means that Top Bar automatically expands or collapses when scrolling is stopped.
+ - AutoSnapOption.NoAutoSnap `default`
+ - AutoSnapOption.AutoSnapWithScrollableState(scrollableState)
+
+For use AutoSnapWithScrollableState, You need to pass the inner scrollableState. you can follow as the example below :
+```kotlin
+val innerScrollState = rememberLazyListState()
+CollapsingToolBarLayout(
+    state = rememberCollapsingToolBarState(200.dp, 56.dp),
+    autoSnapOption = AutoSnapOption.AutoSnapWithScrollableState(innerScrollState),
+    toolbar = { toolBarCollapsedInfo ->
+        //ToolBar Layout
+    }
+) { innerPadding ->
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = innerPadding,
+        state = innerScrollState
+    ) {
+        items(contentList) { item ->
+            Menu(item)
+        }
+    }
+}
+```
+
+####ToolBarCollapsedInfo
+`ToolBarCollapsedInfo` is Top Bar Status class that includes Top Bar's height & progress information.
+ - height : You need to use this value for updating Top Bar's height.
+ - progress : This Float value is range in 0 ~ 1. 0 when Top bar is fully expanded, and 1 when fully collapsed.
+You can follow as the example below :
+```kotlin
+CollapsingToolBarLayout(
+    state = rememberCollapsingToolBarState(200.dp, 56.dp),
+    toolbar = { toolBarCollapsedInfo ->
+        // Note : pass the progress parameter to MotionTopBar for updating MotionLayout progress status.
+        MotionTopBar(
+            modifier = Modifier
+                .height(toolBarCollapsedInfo.toolBarHeight),
+            progress = toolBarCollapsedInfo.progress
+        )
+    }
+)
+```
 
 ## License
 ```xml

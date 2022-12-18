@@ -20,7 +20,7 @@ import io.groovin.collapsingtoolbar.rememberCollapsingToolBarState
 import io.groovin.sampleapp.data.MenuItem
 import io.groovin.sampleapp.ui.composable.Menu
 import io.groovin.sampleapp.ui.composable.FloatingButton
-import io.groovin.sampleapp.ui.composable.MotionLayoutHeader
+import io.groovin.sampleapp.ui.composable.MotionTopBar
 import io.groovin.sampleapp.ui.theme.GroovinTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -35,17 +35,15 @@ fun MotionLayoutOptScreen(contentList: List<MenuItem>, option: CollapsingOption,
     val floatingButtonVisible by remember { derivedStateOf { innerScrollState.firstVisibleItemIndex > 2 } }
     GroovinTheme {
         CollapsingToolBarLayout(
-            modifier = Modifier.fillMaxSize(),
             state = collapsingToolBarState,
             autoSnapOption = AutoSnapOption.AutoSnapWithScrollableState(innerScrollState),
             toolBarIsBackground = isToolBarBackground,
-            toolbar = {
-                toolBarHeight = it.toolBarHeight
-                MotionLayoutHeader(
+            toolbar = { toolBarCollapsedInfo ->
+                toolBarHeight = toolBarCollapsedInfo.toolBarHeight
+                MotionTopBar(
                     modifier = Modifier
-                        .fillMaxWidth()
                         .height(toolBarHeight),
-                    progress = it.progress
+                    progress = toolBarCollapsedInfo.progress
                 )
             }
         ) { innerPadding ->

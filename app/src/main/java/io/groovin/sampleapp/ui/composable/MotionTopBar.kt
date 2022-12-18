@@ -26,7 +26,7 @@ import io.groovin.sampleapp.R
 
 @OptIn(ExperimentalMotionApi::class, ExperimentalUnitApi::class)
 @Composable
-fun MotionLayoutHeader(
+fun MotionTopBar(
     modifier: Modifier = Modifier,
     progress: Float
 ) {
@@ -40,7 +40,7 @@ fun MotionLayoutHeader(
     MotionLayout(
         motionScene = MotionScene(motionScene),
         progress = progress,
-        modifier = modifier.then(
+        modifier = modifier.fillMaxWidth().then(
             Modifier.background(MaterialTheme.colors.primary)
         )
     ) {
