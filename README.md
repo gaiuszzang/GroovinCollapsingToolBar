@@ -1,10 +1,7 @@
 ## GroovinCollapsingToolBar
 This library offers a Collapsing Tool Bar Layout for Jetpack Compose.
 
-
-## Sample App
-It will be update soon.
-
+![groovin_collapsing_example_main](https://user-images.githubusercontent.com/15318053/208280206-b9866b75-5eeb-4d1d-b4a2-2e1bba35a3a6.gif)
 
 ## Including in your project
 ### Gradle
@@ -62,7 +59,7 @@ CollapsingToolBarLayout(
 }
 ```
 
-####CollapsingToolBarState
+#### CollapsingToolBarState
 CollapsingToolBar needs `CollapsingToolBarState` instance for store and use its status.
 ```kotlin
 val collapsingToolBarState = rememberCollapsingToolBarState(
@@ -75,7 +72,7 @@ You need to define ToolBar's Min/Max Height. also, You can define the collapsing
  - CollapsingOption.EnterAlways
  - CollapsingOption.EnterAlwaysCollapsed `default`
 
-####AutoSnapOption
+#### AutoSnapOption
 AutoSnap means that Top Bar automatically expands or collapses when scrolling is stopped.
  - AutoSnapOption.NoAutoSnap `default`
  - AutoSnapOption.AutoSnapWithScrollableState(scrollableState)
@@ -102,7 +99,7 @@ CollapsingToolBarLayout(
 }
 ```
 
-####ToolBarCollapsedInfo
+#### ToolBarCollapsedInfo
 `ToolBarCollapsedInfo` is Top Bar Status class that includes Top Bar's height & progress information.
  - height : You need to use this value for updating Top Bar's height.
  - progress : This Float value is range in 0 ~ 1. 0 when Top bar is fully expanded, and 1 when fully collapsed.
