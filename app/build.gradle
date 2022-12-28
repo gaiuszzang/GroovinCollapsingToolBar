@@ -9,7 +9,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "io.groovin.sampleapp"
+        applicationId "io.groovin.collapsingtoolbar.sampleapp"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -71,8 +71,9 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha05"
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
     implementation "io.coil-kt:coil-compose:2.2.2"
-    implementation implementation(project(':GroovinCollapsingToolBar'))
+    implementation(project(':GroovinCollapsingToolBar'))
 
+    implementation "com.chargemap.compose:numberpicker:1.0.3"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'

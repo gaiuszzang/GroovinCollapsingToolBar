@@ -1,0 +1,36 @@
+name: Sample App Build CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Upload Sample App Artifact'
+        required: false
+        type: boolean
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build debug APK
+        run: bash ./gradlew assembleDebug --stacktrace
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v3.1.1
+        if: inputs.deploy
+        with:
+          name: debugApk
+          path: app/build/outputs/apk/debug

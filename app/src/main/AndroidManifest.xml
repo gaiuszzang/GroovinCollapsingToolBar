@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Groovin">
         <activity
-            android:name="io.groovin.sampleapp.ui.MainActivity"
+            android:name="io.groovin.collapsingtoolbar.sampleapp.ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Groovin.NoActionBar">
             <intent-filter>

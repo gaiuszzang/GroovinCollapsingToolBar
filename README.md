@@ -1,7 +1,7 @@
 ## GroovinCollapsingToolBar
 This library offers a Collapsing Tool Bar Layout for Jetpack Compose.
 
-![groovin_collapsing_example_main](https://user-images.githubusercontent.com/15318053/208280206-b9866b75-5eeb-4d1d-b4a2-2e1bba35a3a6.gif)
+![groovin_collapsing_example_main](https://user-images.githubusercontent.com/15318053/209902191-bf918d3a-beff-45e4-ad3c-0315d0f63b75.gif)
 
 ## Including in your project
 ### Gradle
@@ -26,7 +26,7 @@ allprojects {
 And add a dependency code to your **module**'s `build.gradle` file.
 ```gradle
 dependencies {
-    implementation 'com.github.gaiuszzang:GroovinCollapsingToolBar:1.0.0'
+    implementation 'com.github.gaiuszzang:GroovinCollapsingToolBar:x.x.x'
 }
 ```
 
@@ -35,27 +35,13 @@ dependencies {
 ### CollapsingToolBarLayout
 `CollapsingToolBarLayout` is Composable Scaffold Layout that has a Top bar & content.
 ```kotlin
-val collapsingToolBarState = rememberCollapsingToolBarState(
-    toolBarMaxHeight = 200.dp,
-    toolBarMinHeight = 56.dp,
-    collapsingOption = CollapsingOption.EnterAlwaysCollapsed
-)
 CollapsingToolBarLayout(
-    state = collapsingToolBarState,
-    autoSnapOption = AutoSnapOption.NoAutoSnap,
+    state = rememberCollapsingToolBarState(200.dp, 56.dp),
     toolbar = { toolBarCollapsedInfo ->
-        //TODO : Top Bar
-        TopBarLayout(
-            modifier = Modifier
-                .height(toolBarCollapsedInfo.toolBarHeight)
-        )
+        TopBar(...) //Top Bar Composable
     }
-) { innerPadding ->
-    //TODO : Content
-    ContentLayout(
-        modifier = Modifier
-            .padding(innerPadding)
-    )
+) {
+    Content(...) //Content Composable
 }
 ```
 
@@ -71,51 +57,63 @@ val collapsingToolBarState = rememberCollapsingToolBarState(
 You need to define ToolBar's Min/Max Height. also, You can define the collapsing Options.
  - CollapsingOption.EnterAlways
  - CollapsingOption.EnterAlwaysCollapsed `default`
+ - CollapsingOption.EnterAlwaysAutoSnap
+ - CollapsingOption.EnterAlwaysCollapsedAutoSnap
 
-#### AutoSnapOption
-AutoSnap means that Top Bar automatically expands or collapses when scrolling is stopped.
- - AutoSnapOption.NoAutoSnap `default`
- - AutoSnapOption.AutoSnapWithScrollableState(scrollableState)
+>AutoSnap means that Top Bar automatically expands or collapses when scrolling is stopped.
 
-For use AutoSnapWithScrollableState, You need to pass the inner scrollableState. you can follow as the example below :
-```kotlin
-val innerScrollState = rememberLazyListState()
-CollapsingToolBarLayout(
-    state = rememberCollapsingToolBarState(200.dp, 56.dp),
-    autoSnapOption = AutoSnapOption.AutoSnapWithScrollableState(innerScrollState),
-    toolbar = { toolBarCollapsedInfo ->
-        //ToolBar Layout
-    }
-) { innerPadding ->
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = innerPadding,
-        state = innerScrollState
-    ) {
-        items(contentList) { item ->
-            Menu(item)
-        }
-    }
-}
-```
 
 #### ToolBarCollapsedInfo
 `ToolBarCollapsedInfo` is Top Bar Status class that includes Top Bar's height & progress information.
  - height : You need to use this value for updating Top Bar's height.
  - progress : This Float value is range in 0 ~ 1. 0 when Top bar is fully expanded, and 1 when fully collapsed.
+
 You can follow as the example below :
 ```kotlin
 CollapsingToolBarLayout(
     state = rememberCollapsingToolBarState(200.dp, 56.dp),
     toolbar = { toolBarCollapsedInfo ->
-        // Note : pass the progress parameter to MotionTopBar for updating MotionLayout progress status.
         MotionTopBar(
-            modifier = Modifier
-                .height(toolBarCollapsedInfo.toolBarHeight),
             progress = toolBarCollapsedInfo.progress
         )
     }
 )
+```
+
+  
+#### CollapsingToolBarLayoutContentScope
+A `CollapsingToolBarLayoutContentScope` provides a scope for the content of CollapsingToolBarLayout.
+Also, following kotlin extension methods are provided for scrolling contents with ScrollableState or LazyListState.
+ - ScrollableState.scrollWithToolBarBy()
+ - ScrollableState.animateScrollWithToolBarBy()
+ - LazyListState.animateScrollWithToolBarToItem()
+
+You can follow as the example below :
+```kotlin
+val lazyListState = rememberLazyListState()
+
+CollapsingToolBarLayout(
+    state = rememberCollapsingToolBarState(200.dp, 56.dp),
+    toolbar = { toolBarCollapsedInfo ->
+        TopBar(...)
+    }
+) {
+    LazyColumn(
+        state = lazyListState
+    ) {
+        items(contentList) {
+            Item(it)
+        }
+    }
+    FloatingButton(
+        onClick = {
+            scope.launch {
+                // Scroll to top
+                lazyListState.animateScrollWithToolBarToItem(0)
+            }
+        }
+    )
+}
 ```
 
 ## License

@@ -6,6 +6,6 @@ dependencyResolutionManagement {
         maven { url "https://jitpack.io" }
     }
 }
-rootProject.name = "groovinCollapsingToolBar"
+rootProject.name = "GroovinCollapsingToolBar"
 include ':app'
 include ':GroovinCollapsingToolBar'

@@ -63,9 +63,9 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
-                groupId = 'com.github.gaiuszzang'
-                artifactId = 'groovinCollapsingToolBar'
-                version = '1.0.0'
+                groupId = 'io.groovin'
+                artifactId = 'collapsingtoolbar'
+                version = '1.0.1'
             }
         }
     }
