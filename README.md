@@ -61,6 +61,10 @@ You need to define ToolBar's Min/Max Height. also, You can define the collapsing
  - CollapsingOption.EnterAlwaysAutoSnap
  - CollapsingOption.EnterAlwaysCollapsedAutoSnap
 
+|                                                      EnterAlways                                                      |                                                     EnterAlwaysCollapsed                                                      |                                                      EnterAlwaysAutoSnap                                                       |                                                      EnterAlwaysCollapsedAutoSnap                                                      |
+|:---------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------:|
+| ![enterAlways](https://user-images.githubusercontent.com/15318053/210083650-d1ed6547-722b-4a96-ba7c-5da482576019.gif) | ![enterAlwaysAutoSnap](https://user-images.githubusercontent.com/15318053/210083656-62fb23a3-a720-405e-b6b9-393c4c570012.gif) | ![enterAlwaysCollapsed](https://user-images.githubusercontent.com/15318053/210083690-2ce4647c-1559-4394-9f4c-5d09c67de522.gif) | ![enterAlwaysCollpasedAutoSnap](https://user-images.githubusercontent.com/15318053/210083692-f8d4e4ab-b36f-4f9c-ba38-b794ee064163.gif) |
+
 >AutoSnap means that Top Bar automatically expands or collapses when scrolling is stopped.
 
 

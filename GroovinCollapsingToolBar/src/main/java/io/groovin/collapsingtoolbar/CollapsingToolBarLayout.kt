@@ -1,11 +1,14 @@
 package io.groovin.collapsingtoolbar
 
+import android.os.Build
 import androidx.compose.animation.SplineBasedFloatDecayAnimationSpec
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.animateDecay
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
@@ -158,8 +161,8 @@ class CollapsingToolBarState(
     }
 
     internal fun onPreScroll(available: Offset): Offset {
-        val directionUp = available.y < 0
-        return if (directionUp) {
+        val directionDown = available.y < 0
+        return if (directionDown) {
             Offset(0f, if (toolbarOffsetHeightPx < toolbarHeightRangePx) consumeScrollHeight(available.y) else 0f)
         } else {
             if (collapsingOption.collapsingWhenTop) {
@@ -237,6 +240,7 @@ fun rememberCollapsingToolBarState(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CollapsingToolBarLayout(
     modifier: Modifier = Modifier,
@@ -277,6 +281,7 @@ fun CollapsingToolBarLayout(
     }
     Column(
         modifier = Modifier
+            .fillMaxSize()
             .nestedScroll(nestedScrollConnection)
             .then(modifier)
     ) {
@@ -293,9 +298,17 @@ fun CollapsingToolBarLayout(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .weight(1f)
         ) {
-            CollapsingToolBarLayoutContentScope(state).content()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && state.collapsingOption.collapsingWhenTop) {
+                //BugFix
+                // Since Android 12(S), Overscroll effect consumes scroll event first.
+                // So, Disable Overscroll effect in >= Android 12 version case.
+                CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+                    CollapsingToolBarLayoutContentScope(state).content()
+                }
+            } else {
+                CollapsingToolBarLayoutContentScope(state).content()
+            }
         }
     }
 }
