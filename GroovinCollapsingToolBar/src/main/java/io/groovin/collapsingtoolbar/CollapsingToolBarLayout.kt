@@ -1,5 +1,6 @@
 package io.groovin.collapsingtoolbar
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.compose.animation.SplineBasedFloatDecayAnimationSpec
 import androidx.compose.animation.core.AnimationSpec
@@ -111,6 +112,7 @@ class CollapsingToolBarLayoutContentScope(
 }
 
 
+@SuppressLint("AutoboxingStateCreation")
 @Stable
 class CollapsingToolBarState(
     private val density: Density,
@@ -280,10 +282,10 @@ fun CollapsingToolBarLayout(
         }
     }
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .nestedScroll(nestedScrollConnection)
-            .then(modifier)
+            //.then(modifier)
     ) {
         //ToolBar
         Box(
