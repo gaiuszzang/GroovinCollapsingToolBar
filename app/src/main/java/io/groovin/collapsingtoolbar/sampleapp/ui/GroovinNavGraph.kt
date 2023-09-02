@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import io.groovin.collapsingtoolbar.CollapsingOption
 import io.groovin.collapsingtoolbar.sampleapp.ui.screen.MotionLayoutOptionScreen
 import io.groovin.collapsingtoolbar.sampleapp.ui.screen.MotionLayoutSimpleScreen
@@ -13,11 +14,8 @@ import io.groovin.collapsingtoolbar.sampleapp.ui.screen.ShowRoomScreen
 
 object GroovinDestination {
     const val INTRO = "intro"
-    const val SHOWROOM_SIMPLE                           = "SHOWROOM_SIMPLE_CASE"
-    const val SHOWROOM_ENTER_ALWAYS                     = "SHOWROOM_ENTER_ALWAYS_CASE"
-    const val SHOWROOM_ENTER_ALWAYS_COLLAPSED           = "SHOWROOM_ENTER_ALWAYS_COLLAPSE_CASE"
-    const val SHOWROOM_ENTER_ALWAYS_AUTO_SNAP           = "SHOWROOM_ENTER_ALWAYS_AUTO_SNAP_CASE"
-    const val SHOWROOM_ENTER_ALWAYS_COLLAPSED_AUTO_SNAP = "SHOWROOM_ENTER_ALWAYS_COLLAPSE_AUTO_SNAP_CASE"
+    const val SHOWROOM_SIMPLE = "SHOWROOM_SIMPLE_CASE"
+    const val SHOWROOM_WITH_OPTION = "SHOWROOM_WITH_OPTION"
 }
 val LocalNavAction = compositionLocalOf<GroovinAction> { error("can't find GroovinAction") }
 
@@ -32,17 +30,36 @@ fun GroovinNavGraph(
         composable(GroovinDestination.SHOWROOM_SIMPLE) {
             MotionLayoutSimpleScreen()
         }
-        composable(GroovinDestination.SHOWROOM_ENTER_ALWAYS) {
-            MotionLayoutOptionScreen(CollapsingOption.EnterAlways)
-        }
-        composable(GroovinDestination.SHOWROOM_ENTER_ALWAYS_COLLAPSED) {
-            MotionLayoutOptionScreen(CollapsingOption.EnterAlwaysCollapsed)
-        }
-        composable(GroovinDestination.SHOWROOM_ENTER_ALWAYS_AUTO_SNAP) {
-            MotionLayoutOptionScreen(CollapsingOption.EnterAlwaysAutoSnap)
-        }
-        composable(GroovinDestination.SHOWROOM_ENTER_ALWAYS_COLLAPSED_AUTO_SNAP) {
-            MotionLayoutOptionScreen(CollapsingOption.EnterAlwaysCollapsedAutoSnap)
+        composable(
+            "${GroovinDestination.SHOWROOM_WITH_OPTION}?" +
+                    "isEnterAlwaysCollapsed={isEnterAlwaysCollapsed}&" +
+                    "isAutoSnap={isAutoSnap}&" +
+                    "toolBarScrollable={toolBarScrollable}&" +
+                    "requiredToolBarMaxHeight={requiredToolBarMaxHeight}",
+            arguments = listOf(
+                navArgument("isEnterAlwaysCollapsed") { defaultValue = false },
+                navArgument("isAutoSnap") { defaultValue = false },
+                navArgument("toolBarScrollable") { defaultValue = false },
+                navArgument("requiredToolBarMaxHeight") { defaultValue = false },
+            )
+        ) {
+            val isEnterAlwaysCollapsed = it.arguments?.getBoolean("isEnterAlwaysCollapsed", false) ?: false
+            val isAutoSnap = it.arguments?.getBoolean("isAutoSnap", false) ?: false
+            val toolBarScrollable = it.arguments?.getBoolean("toolBarScrollable", false) ?: false
+            val requiredToolBarMaxHeight = it.arguments?.getBoolean("requiredToolBarMaxHeight", false) ?: false
+            val collapsingOption = when (Pair(isEnterAlwaysCollapsed, isAutoSnap)) {
+                false to false -> CollapsingOption.EnterAlways
+                true to false -> CollapsingOption.EnterAlwaysCollapsed
+                false to true -> CollapsingOption.EnterAlwaysAutoSnap
+                true to true -> CollapsingOption.EnterAlwaysCollapsedAutoSnap
+                else -> CollapsingOption.EnterAlways
+            }
+            MotionLayoutOptionScreen(
+                option = collapsingOption,
+                toolBarScrollable = toolBarScrollable,
+                requiredToolBarMaxHeight = requiredToolBarMaxHeight
+
+            )
         }
     }
 }
@@ -51,20 +68,22 @@ class GroovinAction(private val navController: NavHostController?) {
     val moveToSimpleShowRoom: () -> Unit = {
         navController?.navigate(GroovinDestination.SHOWROOM_SIMPLE)
     }
-    val moveToEnterAlwaysCaseShowRoom: () -> Unit = {
-        navController?.navigate(GroovinDestination.SHOWROOM_ENTER_ALWAYS)
-    }
-    val moveToEnterAlwaysCollapsedShowRoom: () -> Unit = {
-        navController?.navigate(GroovinDestination.SHOWROOM_ENTER_ALWAYS_COLLAPSED)
-    }
-    val moveToEnterAlwaysAutoSnapShowRoom: () -> Unit = {
-        navController?.navigate(GroovinDestination.SHOWROOM_ENTER_ALWAYS_AUTO_SNAP)
-    }
-    val moveToEnterAlwaysCollapsedAutoSnapShowRoom: () -> Unit = {
-        navController?.navigate(GroovinDestination.SHOWROOM_ENTER_ALWAYS_COLLAPSED_AUTO_SNAP)
-    }
     val moveToBack: () -> Unit = {
         navController?.popBackStack()
+    }
+    fun moveToShowRoomOptionScreen(
+        isEnterAlwaysCollapsed: Boolean,
+        isAutoSnap: Boolean,
+        toolBarScrollable: Boolean,
+        requiredToolBarMaxHeight: Boolean
+    ) {
+        navController?.navigate(
+            "${GroovinDestination.SHOWROOM_WITH_OPTION}?" +
+                    "isEnterAlwaysCollapsed=$isEnterAlwaysCollapsed&" +
+                    "isAutoSnap=$isAutoSnap&" +
+                    "toolBarScrollable=$toolBarScrollable&" +
+                    "requiredToolBarMaxHeight=$requiredToolBarMaxHeight",
+        )
     }
 }
 

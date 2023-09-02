@@ -19,6 +19,8 @@ import io.groovin.collapsingtoolbar.sampleapp.data.LocalCommonData
 import io.groovin.collapsingtoolbar.sampleapp.ui.composable.Menu
 import io.groovin.collapsingtoolbar.sampleapp.ui.composable.FloatingButton
 import io.groovin.collapsingtoolbar.sampleapp.ui.composable.MotionTopBar
+import io.groovin.collapsingtoolbar.sampleapp.ui.composable.conditional
+import io.groovin.collapsingtoolbar.sampleapp.ui.composable.rememberStatusBarHeight
 import io.groovin.collapsingtoolbar.sampleapp.ui.theme.GroovinTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -26,19 +28,41 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MotionLayoutOptionScreen(option: CollapsingOption) {
+fun MotionLayoutOptionScreen(
+    option: CollapsingOption,
+    toolBarScrollable: Boolean = true,
+    requiredToolBarMaxHeight: Boolean = false
+) {
     val commonData = LocalCommonData.current
     val contentList by remember { mutableStateOf(commonData.getShowRoomContentList()) }
     val lazyListState = rememberLazyListState()
+    val statusBarHeight by rememberStatusBarHeight()
     val collapsingToolBarState = rememberCollapsingToolBarState(220.dp, 56.dp, option)
     val floatingButtonVisible by remember { derivedStateOf { lazyListState.firstVisibleItemIndex > 2 } }
     val refreshEnable by remember { derivedStateOf { collapsingToolBarState.progress == 0f } }
     GroovinTheme {
         CollapsingToolBarLayout(
+            modifier = Modifier.navigationBarsPadding(),
             state = collapsingToolBarState,
-            toolbar = { toolBarCollapsedInfo ->
+            updateToolBarHeightManually = true,
+            toolbar = {
                 MotionTopBar(
-                    progress = toolBarCollapsedInfo.progress
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(collapsedInfo.toolBarHeight + statusBarHeight)
+                        .conditional(
+                            condition = requiredToolBarMaxHeight,
+                            trueConditionModifier = {
+                                requiredToolBarMaxHeight(collapsingToolBarState.toolBarMaxHeight + statusBarHeight)
+                            }
+                        )
+                        .conditional(
+                            condition = toolBarScrollable,
+                            trueConditionModifier = {
+                                toolBarScrollable()
+                            }
+                        ),
+                    progress = collapsedInfo.progress
                 )
             }
         ) {
@@ -51,7 +75,9 @@ fun MotionLayoutOptionScreen(option: CollapsingOption) {
                     isRefreshing = false
                 }
             })
-            Box(modifier = Modifier.fillMaxSize().pullRefresh(refreshState, refreshEnable)) {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .pullRefresh(refreshState, refreshEnable)) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     state = lazyListState

@@ -15,6 +15,7 @@ import io.groovin.collapsingtoolbar.rememberCollapsingToolBarState
 import io.groovin.collapsingtoolbar.sampleapp.data.LocalCommonData
 import io.groovin.collapsingtoolbar.sampleapp.ui.composable.Menu
 import io.groovin.collapsingtoolbar.sampleapp.ui.composable.MotionTopBar
+import io.groovin.collapsingtoolbar.sampleapp.ui.composable.rememberStatusBarHeight
 import io.groovin.collapsingtoolbar.sampleapp.ui.theme.GroovinTheme
 
 
@@ -22,13 +23,20 @@ import io.groovin.collapsingtoolbar.sampleapp.ui.theme.GroovinTheme
 fun MotionLayoutSimpleScreen() {
     val commonData = LocalCommonData.current
     val contentList by remember { mutableStateOf(commonData.getShowRoomContentList()) }
+    val statusBarHeight by rememberStatusBarHeight()
     val innerScrollState = rememberLazyListState()
     GroovinTheme {
         CollapsingToolBarLayout(
+            modifier = Modifier.navigationBarsPadding(),
             state = rememberCollapsingToolBarState(200.dp, 56.dp),
-            toolbar = { toolBarCollapsedInfo ->
+            updateToolBarHeightManually = true,
+            toolbar = {
                 MotionTopBar(
-                    progress = toolBarCollapsedInfo.progress
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(collapsedInfo.toolBarHeight + statusBarHeight)
+                        .toolBarScrollable(),
+                    progress = collapsedInfo.progress
                 )
             }
         ) {

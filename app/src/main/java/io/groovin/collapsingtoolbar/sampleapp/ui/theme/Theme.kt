@@ -4,7 +4,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val LightColorPalette = lightColors(
@@ -31,18 +30,6 @@ private val DarkColorPalette = darkColors(
     onSurface = DarkOnSurface,
     background = DarkSurface,
     onBackground = DarkOnSurface
-)
-
-private val GroovinClockColorPalette = lightColors(
-    primary = Color.LightGray,
-    primaryVariant = Color.Gray,
-    secondary = Color.Blue,
-    background = Color.Black,
-    surface = Color.Black,
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onBackground = Color.White,
-    onSurface = Color.White
 )
 
 @Composable

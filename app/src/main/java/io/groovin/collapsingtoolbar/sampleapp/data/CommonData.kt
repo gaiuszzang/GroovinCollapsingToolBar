@@ -4,6 +4,10 @@ import androidx.compose.runtime.staticCompositionLocalOf
 
 class CommonData {
     var listSize: Int = 30
+    var isEnterAlwaysCollapsed: Boolean = false
+    var isAutoSnap: Boolean = false
+    var toolBarScrollable: Boolean = false
+    var requiredToolBarMaxHeight: Boolean = false
     fun getShowRoomContentList(): List<MenuItem> {
         val list = mutableListOf<MenuItem>()
         for (i in 1..listSize) {

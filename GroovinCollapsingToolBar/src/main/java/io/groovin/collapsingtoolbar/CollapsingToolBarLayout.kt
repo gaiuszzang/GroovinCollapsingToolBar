@@ -1,6 +1,5 @@
 package io.groovin.collapsingtoolbar
 
-import android.annotation.SuppressLint
 import android.os.Build
 import androidx.compose.animation.SplineBasedFloatDecayAnimationSpec
 import androidx.compose.animation.core.AnimationSpec
@@ -10,8 +9,12 @@ import androidx.compose.animation.core.animateDecay
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.gestures.FlingBehavior
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.ScrollScope
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.*
@@ -31,9 +34,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.ui.util.fastSumBy
-import androidx.compose.ui.zIndex
 import kotlinx.coroutines.Job
-
 
 sealed class CollapsingOption(
     val collapsingWhenTop: Boolean,
@@ -56,6 +57,40 @@ data class ToolBarCollapsedInfo(
     val progress: Float,
     val toolBarHeight: Dp
 )
+
+class CollapsingToolBarLayoutToolBarScope(
+    private val toolBarState: CollapsingToolBarState,
+    val collapsedInfo: ToolBarCollapsedInfo
+) {
+    fun Modifier.toolBarScrollable(): Modifier =
+        this.scrollable(
+            orientation = Orientation.Vertical,
+            state = ScrollableState { it },
+            flingBehavior = object : FlingBehavior {
+                override suspend fun ScrollScope.performFling(initialVelocity: Float): Float {
+                    return if (toolBarState.collapsingOption.isAutoSnap) {
+                        val centerPx = (toolBarState.toolBarMaxHeightPx + toolBarState.toolBarMinHeightPx) / 2
+                        val toolBarHeightPx = toolBarState.toolBarHeightPx
+                        toolBarState.snapToolBar(toolBarHeightPx >= centerPx)
+                        0f
+                    } else {
+                        if (initialVelocity < 0) {
+                            toolBarState.flingY(initialVelocity)
+                            0f
+                        } else {
+                            initialVelocity
+                        }
+                    }
+                }
+            },
+            enabled = (!toolBarState.collapsingOption.collapsingWhenTop || collapsedInfo.progress < 1f)
+        )
+
+    fun Modifier.requiredToolBarMaxHeight(maxHeight: Dp = toolBarState.toolBarMaxHeight): Modifier =
+        this.fillMaxHeight()
+            .requiredHeight(maxHeight)
+            .offset(y = -(toolBarState.toolBarMaxHeight - collapsedInfo.toolBarHeight) / 2)
+}
 
 class CollapsingToolBarLayoutContentScope(
     private val state: CollapsingToolBarState
@@ -112,7 +147,6 @@ class CollapsingToolBarLayoutContentScope(
 }
 
 
-@SuppressLint("AutoboxingStateCreation")
 @Stable
 class CollapsingToolBarState(
     private val density: Density,
@@ -187,14 +221,18 @@ class CollapsingToolBarState(
         }
     }
 
-    internal suspend fun flingDown(velocityY: Float) {
+    internal suspend fun flingY(velocityY: Float) {
+        var isDone = false
         contentOffset = 0f
         var prevValue = 0f
         animateDecay(0f, velocityY, SplineBasedFloatDecayAnimationSpec(density)) { value, _ ->
-            val diff = value - prevValue
-            prevValue = value
-            val consumedOffset = onPreScroll(Offset(0f, diff))
-            onPostScroll(consumedOffset, Offset.Zero)
+            if (!isDone) {
+                val diff = value - prevValue
+                prevValue = value
+                val consumedOffset = onPreScroll(Offset(0f, diff))
+                onPostScroll(consumedOffset, Offset.Zero)
+                if (consumedOffset.y == 0f) isDone = true
+            }
         }
     }
 
@@ -247,7 +285,8 @@ fun rememberCollapsingToolBarState(
 fun CollapsingToolBarLayout(
     modifier: Modifier = Modifier,
     state: CollapsingToolBarState,
-    toolbar: @Composable (info: ToolBarCollapsedInfo) -> Unit,
+    updateToolBarHeightManually: Boolean = false,
+    toolbar: @Composable CollapsingToolBarLayoutToolBarScope.() -> Unit,
     content: @Composable CollapsingToolBarLayoutContentScope.() -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -268,7 +307,7 @@ fun CollapsingToolBarLayout(
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
                 snapAnimationJob = coroutineScope.launch {
                     if (available.y > 0f) {
-                        state.flingDown(available.y)
+                        state.flingY(available.y)
                     }
                     if (state.collapsingOption.isAutoSnap) {
                         val centerPx = (state.toolBarMaxHeightPx + state.toolBarMinHeightPx) / 2
@@ -282,19 +321,19 @@ fun CollapsingToolBarLayout(
         }
     }
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .nestedScroll(nestedScrollConnection)
-            //.then(modifier)
+            .then(modifier)
     ) {
         //ToolBar
+        val toolBarCollapsedInfo = ToolBarCollapsedInfo(state.progress, state.toolBarHeight)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(state.toolBarHeight)
-                .zIndex(1f)
+                .then(if (!updateToolBarHeightManually) Modifier.height(state.toolBarHeight) else Modifier)
         ) {
-            toolbar(ToolBarCollapsedInfo(state.progress, state.toolBarHeight))
+            CollapsingToolBarLayoutToolBarScope(state, toolBarCollapsedInfo).toolbar()
         }
         //Content
         Box(
