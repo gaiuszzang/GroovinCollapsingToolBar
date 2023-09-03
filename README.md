@@ -2,7 +2,7 @@
 [![Release](https://jitpack.io/v/gaiuszzang/GroovinCollapsingToolBar.svg)](https://jitpack.io/#gaiuszzang/GroovinCollapsingToolBar)  
 This library offers a Collapsing Tool Bar Layout for Jetpack Compose.
 
-![groovin_collapsing_example_main](https://user-images.githubusercontent.com/15318053/209902191-bf918d3a-beff-45e4-ad3c-0315d0f63b75.gif)
+![sample_main](https://github.com/gaiuszzang/GroovinCollapsingToolBar/assets/15318053/78f030b5-a416-4cfc-9b33-253f3b51ab9e)
 
 ## Including in your project
 ### Gradle
@@ -34,14 +34,17 @@ dependencies {
 
 ## Usage
 ### CollapsingToolBarLayout
-`CollapsingToolBarLayout` is Composable Scaffold Layout that has a Top bar & content.
+`CollapsingToolBarLayout` is Composable Scaffold Layout that contains ToolBar & Content.
 ```kotlin
 CollapsingToolBarLayout(
     state = rememberCollapsingToolBarState(200.dp, 56.dp),
-    toolbar = { toolBarCollapsedInfo ->
-        TopBar(...) //Top Bar Composable
+    updateToolBarHeightManually = false, //Optional, default false
+    toolbar = {
+        //in CollapsingToolBarLayoutToolBarScope
+        ToolBar(...) //Tool Bar Composable
     }
 ) {
+    //in CollapsingToolBarLayoutContentScope
     Content(...) //Content Composable
 }
 ```
@@ -61,29 +64,51 @@ You need to define ToolBar's Min/Max Height. also, You can define the collapsing
  - CollapsingOption.EnterAlwaysAutoSnap
  - CollapsingOption.EnterAlwaysCollapsedAutoSnap
 
-|                                                      EnterAlways                                                      |                                                     EnterAlwaysCollapsed                                                      |                                                      EnterAlwaysAutoSnap                                                       |                                                      EnterAlwaysCollapsedAutoSnap                                                      |
-|:---------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------:|
-| ![enterAlways](https://user-images.githubusercontent.com/15318053/210083650-d1ed6547-722b-4a96-ba7c-5da482576019.gif) | ![enterAlwaysAutoSnap](https://user-images.githubusercontent.com/15318053/210083656-62fb23a3-a720-405e-b6b9-393c4c570012.gif) | ![enterAlwaysCollapsed](https://user-images.githubusercontent.com/15318053/210083690-2ce4647c-1559-4394-9f4c-5d09c67de522.gif) | ![enterAlwaysCollpasedAutoSnap](https://user-images.githubusercontent.com/15318053/210083692-f8d4e4ab-b36f-4f9c-ba38-b794ee064163.gif) |
+|                                                          EnterAlways                                                          |                                                          EnterAlwaysCollapsed                                                          |
+|:-----------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------:|
+|     ![enterAlways](https://user-images.githubusercontent.com/15318053/210083650-d1ed6547-722b-4a96-ba7c-5da482576019.gif)     |     ![EnterAlwaysCollapsed](https://user-images.githubusercontent.com/15318053/210083690-2ce4647c-1559-4394-9f4c-5d09c67de522.gif)     |
+|                                                    **EnterAlwaysAutoSnap**                                                    |                                                    **EnterAlwaysCollapsedAutoSnap**                                                    |
+| ![EnterAlwaysAutoSnap](https://user-images.githubusercontent.com/15318053/210083656-62fb23a3-a720-405e-b6b9-393c4c570012.gif) | ![enterAlwaysCollpasedAutoSnap](https://user-images.githubusercontent.com/15318053/210083692-f8d4e4ab-b36f-4f9c-ba38-b794ee064163.gif) |
 
->AutoSnap means that Top Bar automatically expands or collapses when scrolling is stopped.
+>AutoSnap means that Tool Bar automatically expands or collapses when scrolling is stopped.
 
 
-#### ToolBarCollapsedInfo
-`ToolBarCollapsedInfo` is Top Bar Status class that includes Top Bar's height & progress information.
- - height : You need to use this value for updating Top Bar's height.
- - progress : This Float value is range in 0 ~ 1. 0 when Top bar is fully expanded, and 1 when fully collapsed.
+#### updateToolBarHeightManually
+The height of the toolbar is basically determined by internal logic, but you can disable this feature by setting this parameter to false.
+ - false : The height of the toolbar is determined by internal logic. `default`
+ - true : You must setting the height of toolbar manually.
 
-You can follow as the example below :
-```kotlin
-CollapsingToolBarLayout(
-    state = rememberCollapsingToolBarState(200.dp, 56.dp),
-    toolbar = { toolBarCollapsedInfo ->
-        MotionTopBar(
-            progress = toolBarCollapsedInfo.progress
-        )
-    }
-)
-```
+
+#### CollapsingToolBarLayoutToolBarScope
+A `CollapsingToolBarLayoutToolBarScope` provides a scope for the tool bar of CollapsingToolBarLayout.
+This scope provides following member variables and kotlin extensions.
+ - collapsedInfo : ToolBarCollapsedInfo
+   - `ToolBarCollapsedInfo` is Tool Bar Status class that includes Tool Bar's height & progress information.
+   - collapsedInfo.height : You need to use this value for updating Tool Bar's height.
+   - collapsedInfo.progress : This Float value is range in 0 ~ 1. 0 when Tool bar is fully expanded, and 1 when fully collapsed.
+   - You can follow as the example below :
+     ```kotlin
+     CollapsingToolBarLayout(
+         state = rememberCollapsingToolBarState(200.dp, 56.dp),
+         toolbar = {
+             MotionTopBar(
+                 progress = collapsedInfo.progress
+             )
+         }
+     )
+     ```
+ - Modifier.toolBarScrollable()
+   - This function supports to applying scrollable gesture in ToolBar.
+
+     |                                                                default                                                               |                                                         toolBarScrollable                                                         |
+     |:------------------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------:|
+     | ![toolBarNonScrollable](https://github.com/gaiuszzang/GroovinCollapsingToolBar/assets/15318053/71894902-6a02-4643-bc4a-28241a8b3780) | ![toolBarScrollable](https://github.com/gaiuszzang/GroovinCollapsingToolBar/assets/15318053/6b264e5f-b5b0-41d5-8924-5390995f500f) |
+ - Modifier.requiredToolBarMaxHeight()
+   - This function supports that ToolBar appears to scroll with fixed size.
+
+     |                                                                default                                                                |                                                      requiredToolBarMaxHeight                                                      |
+     |:-------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------:|
+     | ![toolBarNonFixedHeight](https://github.com/gaiuszzang/GroovinCollapsingToolBar/assets/15318053/1a9d5e04-eb84-44cb-aa86-2206180ad4f9) | ![toolBarFixedHeight](https://github.com/gaiuszzang/GroovinCollapsingToolBar/assets/15318053/c2f4391d-c90b-4630-9a9a-5bb3bc4c9911) |
 
   
 #### CollapsingToolBarLayoutContentScope
@@ -120,6 +145,8 @@ CollapsingToolBarLayout(
     )
 }
 ```
+  
+  
 
 ## License
 ```xml
