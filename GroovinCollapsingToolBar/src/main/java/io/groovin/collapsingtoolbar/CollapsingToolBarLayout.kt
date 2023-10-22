@@ -2,11 +2,13 @@ package io.groovin.collapsingtoolbar
 
 import android.os.Build
 import androidx.compose.animation.SplineBasedFloatDecayAnimationSpec
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.animateDecay
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.gestures.FlingBehavior
@@ -22,7 +24,11 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -87,7 +93,8 @@ class CollapsingToolBarLayoutToolBarScope(
         )
 
     fun Modifier.requiredToolBarMaxHeight(maxHeight: Dp = toolBarState.toolBarMaxHeight): Modifier =
-        this.fillMaxHeight()
+        this
+            .fillMaxHeight()
             .requiredHeight(maxHeight)
             .offset(y = -(toolBarState.toolBarMaxHeight - collapsedInfo.toolBarHeight) / 2)
 }
@@ -290,6 +297,7 @@ fun CollapsingToolBarLayout(
     content: @Composable CollapsingToolBarLayoutContentScope.() -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val collapsingToolBarConfiguration = LocalCollapsingToolBarLayoutConfiguration.current
     val nestedScrollConnection = remember {
         object: NestedScrollConnection {
             private var snapAnimationJob: Job? = null
@@ -336,20 +344,93 @@ fun CollapsingToolBarLayout(
             CollapsingToolBarLayoutToolBarScope(state, toolBarCollapsedInfo).toolbar()
         }
         //Content
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && state.collapsingOption.collapsingWhenTop) {
-                //BugFix
-                // Since Android 12(S), Overscroll effect consumes scroll event first.
-                // So, Disable Overscroll effect in >= Android 12 version case.
-                CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+            state.collapsingOption.collapsingWhenTop &&
+            LocalOverscrollConfiguration.current != null) {
+            // BugFix
+            // Since Android 12(S), Overscroll effect consumes scroll event first.
+            // So, Disable Overscroll effect in >= Android 12 version case and
+            // Use the Internal Stretch Effect with according to configurations.
+            CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .conditional(collapsingToolBarConfiguration.collapsingWhenTopConfiguration.useInternalStretchEffectOnTop) {
+                            topStretchEffect()
+                        }
+                        .conditional(collapsingToolBarConfiguration.collapsingWhenTopConfiguration.useInternalStretchEffectOnBottom) {
+                            bottomStretchEffect()
+                        }
+                ) {
                     CollapsingToolBarLayoutContentScope(state).content()
                 }
-            } else {
+            }
+
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
                 CollapsingToolBarLayoutContentScope(state).content()
             }
         }
     }
 }
+
+private inline fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier) : Modifier {
+    return if (condition) {
+        then(modifier(Modifier))
+    } else {
+        this
+    }
+}
+
+private fun Modifier.topStretchEffect(
+    stretchMultiplier: Float = STRETCH_MULTIPLIER
+) = composed {
+    val topOverPullState = rememberTopOverPullState()
+    val overStretchScale = remember { Animatable(0f) }
+    LaunchedEffect(Unit) {
+        snapshotFlow { topOverPullState.overPullDistance.coerceAtLeast(0f) }.collect { overPullDistance ->
+            val nextScale = overPullDistance * stretchMultiplier
+            if (nextScale == 0f && overStretchScale.value != 0f) {
+                overStretchScale.animateTo(targetValue = 0f, animationSpec = tween(250))
+            } else {
+                overStretchScale.snapTo(nextScale)
+            }
+        }
+    }
+    return@composed this
+        .topOverPull(topOverPullState)
+        .clipToBounds()
+        .graphicsLayer(
+            scaleY = (overStretchScale.value + 1f),
+            transformOrigin = TransformOrigin(0f, 0f)
+        )
+}
+
+private fun Modifier.bottomStretchEffect(
+    stretchMultiplier: Float = STRETCH_MULTIPLIER
+) = composed {
+    val bottomOverPullState = rememberBottomOverPullState()
+    val overStretchScale = remember { Animatable(0f) }
+    LaunchedEffect(Unit) {
+        snapshotFlow { bottomOverPullState.overPullDistance.coerceAtLeast(0f) }.collect { overPullDistance ->
+            val nextScale = overPullDistance * stretchMultiplier
+            if (nextScale == 0f && overStretchScale.value != 0f) {
+                overStretchScale.animateTo(targetValue = 0f, animationSpec = tween(250))
+            } else {
+                overStretchScale.snapTo(nextScale)
+            }
+        }
+    }
+    return@composed this
+        .bottomOverPull(bottomOverPullState)
+        .clipToBounds()
+        .graphicsLayer(
+            scaleY = (overStretchScale.value + 1f),
+            transformOrigin = TransformOrigin(0f, 1f)
+        )
+}
+
+internal const val STRETCH_MULTIPLIER = 0.000015f
