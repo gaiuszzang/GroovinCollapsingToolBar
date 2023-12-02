@@ -3,7 +3,7 @@ package io.groovin.collapsingtoolbar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -126,8 +126,8 @@ internal fun rememberBottomOverPullState(
 }
 
 internal class BottomOverPullState internal constructor(private val distanceMultiplier: Float = 1f) {
+    private var distancePulled by mutableFloatStateOf(0f)
     val overPullDistance by derivedStateOf { distancePulled * distanceMultiplier }
-    private var distancePulled by mutableStateOf(0f)
 
     internal fun onPull(originPullDelta: Float): Float {
         val pullDelta = -originPullDelta
@@ -149,8 +149,8 @@ internal class BottomOverPullState internal constructor(private val distanceMult
 }
 
 internal class TopOverPullState internal constructor(private val distanceMultiplier: Float = 1f) {
+    private var distancePulled by mutableFloatStateOf(0f)
     val overPullDistance by derivedStateOf { distancePulled * distanceMultiplier }
-    private var distancePulled by mutableStateOf(0f)
 
     internal fun onPull(originPullDelta: Float): Float {
         val newOffset = (distancePulled + originPullDelta).coerceAtLeast(0f)

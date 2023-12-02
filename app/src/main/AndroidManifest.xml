@@ -25,8 +25,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="groovin" android:host="intro" />
-                <data android:scheme="groovin" android:host="setting" />
+                <data android:scheme="groovin"/>
+                <data android:host="intro"/>
+                <data android:host="setting"/>
             </intent-filter>
         </activity>
     </application>

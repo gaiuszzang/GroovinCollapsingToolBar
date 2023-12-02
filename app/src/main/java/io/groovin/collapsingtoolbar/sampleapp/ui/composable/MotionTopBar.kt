@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import io.groovin.collapsingtoolbar.sampleapp.ui.LocalNavAction
 import io.groovin.sampleapp.R
@@ -35,6 +36,7 @@ private const val imageId = "motionTopBarImage"
 private const val titleId = "motionTopBarTitle"
 private const val backIconId = "motionTopBarBackIcon"
 
+@OptIn(ExperimentalMotionApi::class)
 @Composable
 fun MotionTopBar(
     modifier: Modifier = Modifier,

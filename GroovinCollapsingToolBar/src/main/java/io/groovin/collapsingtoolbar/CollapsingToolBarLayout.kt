@@ -46,10 +46,10 @@ sealed class CollapsingOption(
     val collapsingWhenTop: Boolean,
     val isAutoSnap: Boolean
 ) {
-    object EnterAlways: CollapsingOption(collapsingWhenTop = false, isAutoSnap = false)
-    object EnterAlwaysCollapsed: CollapsingOption(collapsingWhenTop = true, isAutoSnap = false)
-    object EnterAlwaysAutoSnap: CollapsingOption(collapsingWhenTop = false, isAutoSnap = true)
-    object EnterAlwaysCollapsedAutoSnap: CollapsingOption(collapsingWhenTop = true, isAutoSnap = true)
+    data object EnterAlways: CollapsingOption(collapsingWhenTop = false, isAutoSnap = false)
+    data object EnterAlwaysCollapsed: CollapsingOption(collapsingWhenTop = true, isAutoSnap = false)
+    data object EnterAlwaysAutoSnap: CollapsingOption(collapsingWhenTop = false, isAutoSnap = true)
+    data object EnterAlwaysCollapsedAutoSnap: CollapsingOption(collapsingWhenTop = true, isAutoSnap = true)
 
     companion object {
         private val optionList by lazy { listOf(EnterAlways, EnterAlwaysCollapsed, EnterAlwaysAutoSnap, EnterAlwaysCollapsedAutoSnap) }
@@ -161,11 +161,11 @@ class CollapsingToolBarState(
     val toolBarMinHeight: Dp,
     val collapsingOption: CollapsingOption
 ) {
-    var progress: Float by mutableStateOf(0f)
+    var progress: Float by mutableFloatStateOf(0f)
         internal set
-    var contentOffset: Float by mutableStateOf(0f)
+    var contentOffset: Float by mutableFloatStateOf(0f)
         internal set
-    internal var toolbarOffsetHeightPx: Float by mutableStateOf(0f)
+    internal var toolbarOffsetHeightPx: Float by mutableFloatStateOf(0f)
 
     internal val toolBarMaxHeightPx: Int = with(density) { toolBarMaxHeight.roundToPx() }
     internal val toolBarMinHeightPx: Int = with(density) { toolBarMinHeight.roundToPx() }

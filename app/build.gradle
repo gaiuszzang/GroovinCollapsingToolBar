@@ -38,7 +38,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.3'
+        kotlinCompilerExtensionVersion "$compose_compiler_version"
     }
     packagingOptions {
         resources {
@@ -49,28 +49,34 @@ android {
 }
 
 dependencies {
-
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation "androidx.core:core-ktx:$androidx_core_version"
+    implementation "androidx.appcompat:appcompat:1.6.1"
 
     implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:1.5.0" //$compose_version
+    implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.activity:activity-compose:1.7.2'
-    implementation "androidx.compose.material3:material3:1.2.0-alpha06"
-    implementation "androidx.compose.material3:material3-window-size-class:1.1.1"
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
-    implementation 'androidx.navigation:navigation-compose:2.5.3'
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha12"
+
+    implementation "androidx.activity:activity-compose:1.8.1"
+
+    //Note : material3 1.2.0-alpha* version uses compose 1.6.0  version, so dependency conflict.
+    implementation "androidx.compose.material3:material3:1.1.2"
+    implementation "androidx.compose.material3:material3-window-size-class:1.1.2"
+    def lifecycle_version = '2.6.2'
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
+    def navigation_version = '2.7.5'
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
+    implementation "androidx.navigation:navigation-compose:$navigation_version"
+    implementation "androidx.navigation:navigation-runtime-ktx:$navigation_version"
+
+    //Note : constraintlayout-compose 1.1.0-alpha* version uses compose 1.6.0 version, so dependency conflict.
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
-    implementation "io.coil-kt:coil-compose:2.2.2"
+    implementation "io.coil-kt:coil-compose:2.5.0"
+
     implementation(project(':GroovinCollapsingToolBar'))
 
     implementation "com.chargemap.compose:numberpicker:1.0.3"
