@@ -2,7 +2,7 @@
 buildscript {
     ext {
         androidx_core_version = '1.12.0'
-        compose_version = '1.5.4'
+        compose_bom = '2023.10.01'
         compose_compiler_version = '1.5.5'
     }
     repositories {
