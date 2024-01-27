@@ -13,7 +13,7 @@ android {
         minSdk 24
         targetSdk 34
         versionCode 5
-        versionName "1.1.1"
+        versionName "1.2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -60,14 +60,14 @@ dependencies {
     implementation "androidx.activity:activity-compose:1.8.2"
 
     //Note : material3 1.2.0-alpha* version uses compose 1.6.0  version, so dependency conflict.
-    implementation "androidx.compose.material3:material3:1.1.2"
-    implementation "androidx.compose.material3:material3-window-size-class:1.1.2"
+    implementation "androidx.compose.material3:material3:1.2.0"
+    implementation "androidx.compose.material3:material3-window-size-class:1.2.0"
     def lifecycle_version = '2.7.0'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
-    def navigation_version = '2.7.6'
+    def navigation_version = '2.7.7'
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
     implementation "androidx.navigation:navigation-compose:$navigation_version"
