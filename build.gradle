@@ -2,8 +2,9 @@
 buildscript {
     ext {
         androidx_core_version = '1.12.0'
-        compose_bom = '2023.10.01'
-        compose_compiler_version = '1.5.5'
+        compose_bom = '2024.01.00'
+        compose_compiler_version = '1.5.8'
+        kotlin_plugin_version = '1.9.22'
     }
     repositories {
         google()
@@ -12,7 +13,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.1.4'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.20"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_plugin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
