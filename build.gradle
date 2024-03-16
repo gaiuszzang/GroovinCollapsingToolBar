@@ -2,7 +2,7 @@
 buildscript {
     ext {
         androidx_core_version = '1.12.0'
-        compose_bom = '2024.01.00'
+        compose_bom = '2024.02.01'
         compose_compiler_version = '1.5.8'
         kotlin_plugin_version = '1.9.22'
     }

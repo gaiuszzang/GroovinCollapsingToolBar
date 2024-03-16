@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -40,6 +41,7 @@ import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clipToBounds
@@ -356,6 +358,7 @@ fun CollapsingToolBarLayout(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .wrapContentHeight(align = Alignment.Top, unbounded = true)
                 .then(if (!updateToolBarHeightManually) Modifier.height(state.toolBarHeight) else Modifier)
         ) {
             CollapsingToolBarLayoutToolBarScope(state, toolBarCollapsedInfo).toolbar()
