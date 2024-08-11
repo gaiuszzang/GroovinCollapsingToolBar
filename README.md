@@ -1,5 +1,5 @@
 ## GroovinCollapsingToolBar
-[![Release](https://jitpack.io/v/gaiuszzang/GroovinCollapsingToolBar.svg)](https://jitpack.io/#gaiuszzang/GroovinCollapsingToolBar)  
+[![Release](https://jitpack.io/v/io.groovin/GroovinCollapsingToolBar.svg)](https://jitpack.io/#io.groovin/GroovinCollapsingToolBar)  
 This library offers a Collapsing Tool Bar Layout for Jetpack Compose.
 
 ![sample_main](https://github.com/gaiuszzang/GroovinCollapsingToolBar/assets/15318053/78f030b5-a416-4cfc-9b33-253f3b51ab9e)
@@ -15,19 +15,11 @@ dependencyResolutionManagement {
     }
 }
 ```
-for old gradle version, Add below codes to **your project**'s `build.gradle`.
-```gradle
-allprojects {
-    repositories {
-        maven { url "https://jitpack.io" }
-    }
-}
-```
 
 And add a dependency code to your **module**'s `build.gradle` file.
 ```gradle
 dependencies {
-    implementation 'com.github.gaiuszzang:GroovinCollapsingToolBar:x.x.x'
+    implementation 'io.groovin:GroovinCollapsingToolBar:x.x.x'
 }
 ```
 
