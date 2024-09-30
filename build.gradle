@@ -2,24 +2,15 @@
 buildscript {
     ext {
         androidx_core_version = '1.13.1'
-        compose_bom = '2024.06.00'
-        compose_compiler_version = '1.5.8'
-        kotlin_plugin_version = '1.9.22'
-    }
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://jitpack.io" }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.4'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_plugin_version"
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        compose_bom_version = '2024.09.02'
+        kotlin_version = '2.0.0'
     }
 }
 
-tasks.register('clean', Delete) {
-    delete rootProject.buildDir
+plugins {
+    id 'com.android.application' version '8.1.4' apply false
+    id 'com.android.library' version '8.1.4' apply false
+    id 'org.jetbrains.kotlin.android' version "$kotlin_version" apply false
+    id "org.jetbrains.kotlin.plugin.compose"  version "$kotlin_version" apply false
+    id 'com.android.test' version '8.1.4' apply false
 }
