@@ -15,6 +15,7 @@ import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.ScrollScope
 import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
@@ -88,28 +89,30 @@ class CollapsingToolBarLayoutToolBarScope(
     val collapsedInfo: ToolBarCollapsedInfo
 ) {
     fun Modifier.toolBarScrollable(): Modifier =
-        this.scrollable(
-            orientation = Orientation.Vertical,
-            state = ScrollableState { it },
-            flingBehavior = object : FlingBehavior {
-                override suspend fun ScrollScope.performFling(initialVelocity: Float): Float {
-                    return if (toolBarState.collapsingOption.isAutoSnap) {
-                        val centerPx = (toolBarState.toolBarMaxHeightPx + toolBarState.toolBarMinHeightPx) / 2
-                        val toolBarHeightPx = toolBarState.toolBarHeightPx
-                        toolBarState.snapToolBar(toolBarHeightPx >= centerPx)
-                        0f
-                    } else {
-                        if (initialVelocity < 0) {
-                            toolBarState.flingY(initialVelocity)
+        this.composed {
+            scrollable(
+                orientation = Orientation.Vertical,
+                state = rememberScrollableState { it },
+                flingBehavior = object : FlingBehavior {
+                    override suspend fun ScrollScope.performFling(initialVelocity: Float): Float {
+                        return if (toolBarState.collapsingOption.isAutoSnap) {
+                            val centerPx = (toolBarState.toolBarMaxHeightPx + toolBarState.toolBarMinHeightPx) / 2
+                            val toolBarHeightPx = toolBarState.toolBarHeightPx
+                            toolBarState.snapToolBar(toolBarHeightPx >= centerPx)
                             0f
                         } else {
-                            initialVelocity
+                            if (initialVelocity < 0) {
+                                toolBarState.flingY(initialVelocity)
+                                0f
+                            } else {
+                                initialVelocity
+                            }
                         }
                     }
-                }
-            },
-            enabled = (!toolBarState.collapsingOption.collapsingWhenTop || collapsedInfo.progress < 1f)
-        )
+                },
+                enabled = (!toolBarState.collapsingOption.collapsingWhenTop || collapsedInfo.progress < 1f)
+            )
+        }
 
     fun Modifier.requiredToolBarMaxHeight(maxHeight: Dp = toolBarState.toolBarMaxHeight): Modifier =
         this
