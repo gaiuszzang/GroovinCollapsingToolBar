@@ -16,4 +16,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "GroovinCollapsingToolBar"
 include ':app'
-include ':GroovinCollapsingToolBar'
+include ':collapsingtoolbar'

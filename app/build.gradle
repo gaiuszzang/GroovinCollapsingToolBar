@@ -71,8 +71,8 @@ dependencies {
     implementation libs.androidx.constraintlayout.compose
     implementation libs.accompanist.systemuicontroller
     implementation libs.coil.compose
+    implementation(project(':collapsingtoolbar'))
 
-    implementation(project(':GroovinCollapsingToolBar'))
 
     implementation libs.numberpicker
 
