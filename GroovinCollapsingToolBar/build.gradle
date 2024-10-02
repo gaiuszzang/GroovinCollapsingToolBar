@@ -38,13 +38,6 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-
-    publishing {
-        multipleVariants {
-            allVariants()
-            withSourcesJar()
-        }
-    }
 }
 
 dependencies {
@@ -61,16 +54,17 @@ dependencies {
     debugImplementation libs.androidx.compose.ui.tooling
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.getByName('release')
-                groupId = 'io.groovin'
-                artifactId = 'collapsingtoolbar'
-                version = '1.2.3'
+
+publishing {
+    publications {
+        collapsingtoolbar(MavenPublication) {
+            groupId = 'io.groovin'
+            artifactId = 'collapsingtoolbar'
+            version = '1.2.4'
+
+            afterEvaluate {
+                from components.release
             }
         }
     }
 }
-group = 'io.groovin'
