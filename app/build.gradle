@@ -1,8 +1,8 @@
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
-    id 'org.jetbrains.kotlin.android'
+    alias libs.plugins.android.application
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.android.compose
+    alias libs.plugins.kotlin.kapt
 }
 
 android {
@@ -13,7 +13,7 @@ android {
         minSdk 24
         targetSdk 35
         versionCode 6
-        versionName "1.2.2"
+        versionName "1.2.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -37,9 +37,6 @@ android {
     buildFeatures {
         compose true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion "$compose_compiler_version"
-    }
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
@@ -49,41 +46,38 @@ android {
 }
 
 dependencies {
-    implementation "androidx.core:core-ktx:$androidx_core_version"
-    implementation "androidx.appcompat:appcompat:1.7.0"
+    implementation libs.androidx.ktx
+    implementation libs.androidx.appcompat
 
-    implementation platform("androidx.compose:compose-bom:$compose_bom")
-    implementation "androidx.compose.ui:ui"
-    implementation "androidx.compose.material:material"
-    implementation "androidx.compose.ui:ui-tooling-preview"
+    implementation platform(libs.androidx.compose.bom)
+    implementation libs.androidx.compose.ui
+    implementation libs.androidx.compose.ui.preview
+    implementation libs.androidx.compose.material
+    implementation libs.androidx.compose.material3
+    implementation libs.androidx.compose.material3.windowSizeClass
 
-    implementation "androidx.activity:activity-compose:1.9.1"
+    implementation libs.androidx.activity.compose
 
-    //Note : material3 1.2.0-alpha* version uses compose 1.6.0  version, so dependency conflict.
-    implementation "androidx.compose.material3:material3:1.2.1"
-    implementation "androidx.compose.material3:material3-window-size-class:1.2.1"
-    def lifecycle_version = '2.8.4'
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecycle_version"
-    def navigation_version = '2.7.7'
-    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
-    implementation "androidx.navigation:navigation-compose:$navigation_version"
-    implementation "androidx.navigation:navigation-runtime-ktx:$navigation_version"
+    implementation libs.androidx.lifecycle.livedata.ktx
+    implementation libs.androidx.lifecycle.viewmodel.compose
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+    implementation libs.androidx.lifecycle.runtime.ktx
 
-    //Note : constraintlayout-compose 1.1.0-alpha* version uses compose 1.6.0 version, so dependency conflict.
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
-    implementation "io.coil-kt:coil-compose:2.5.0"
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.navigation.ui.ktx
+    implementation libs.androidx.navigation.compose
+    implementation libs.androidx.navigation.runtime.ktx
+
+    implementation libs.androidx.constraintlayout.compose
+    implementation libs.accompanist.systemuicontroller
+    implementation libs.coil.compose
 
     implementation(project(':GroovinCollapsingToolBar'))
 
-    implementation "com.chargemap.compose:numberpicker:1.0.3"
+    implementation libs.numberpicker
 
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-    debugImplementation "androidx.compose.ui:ui-tooling"
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
+    debugImplementation libs.androidx.compose.ui.tooling
 }

@@ -11,65 +11,33 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.debugInspectorInfo
-import androidx.compose.ui.platform.inspectable
 import androidx.compose.ui.unit.Velocity
 
 internal fun Modifier.topOverPull(
     state: TopOverPullState,
     enabled: Boolean = true,
     consume: Boolean = false
-) = inspectable(inspectorInfo = debugInspectorInfo {
-    name = "bottomOverPull"
-    properties["state"] = state
-    properties["enabled"] = enabled
-    properties["consume"] = consume
-}) {
-    Modifier.topOverPull(state::onPull, state::onRelease, enabled, consume)
-}
+) = then(Modifier.topOverPull(state::onPull, state::onRelease, enabled, consume))
 
 internal fun Modifier.bottomOverPull(
     state: BottomOverPullState,
     enabled: Boolean = true,
     consume: Boolean = false
-) = inspectable(inspectorInfo = debugInspectorInfo {
-    name = "bottomOverPull"
-    properties["state"] = state
-    properties["enabled"] = enabled
-    properties["consume"] = consume
-}) {
-    Modifier.bottomOverPull(state::onPull, state::onRelease, enabled, consume)
-}
+) = then(Modifier.bottomOverPull(state::onPull, state::onRelease, enabled, consume))
 
 internal fun Modifier.topOverPull(
     onPull: (pullDelta: Float) -> Float,
     onRelease: suspend (flingVelocity: Float) -> Float,
     enabled: Boolean = true,
     consume: Boolean = false
-) = inspectable(inspectorInfo = debugInspectorInfo {
-    name = "bottomOverPull"
-    properties["onPull"] = onPull
-    properties["onRelease"] = onRelease
-    properties["enabled"] = enabled
-    properties["consume"] = consume
-}) {
-    Modifier.nestedScroll(TopOverPullNestedScrollConnection(onPull, onRelease, enabled, consume))
-}
+) = then(Modifier.nestedScroll(TopOverPullNestedScrollConnection(onPull, onRelease, enabled, consume)))
 
 internal fun Modifier.bottomOverPull(
     onPull: (pullDelta: Float) -> Float,
     onRelease: suspend (flingVelocity: Float) -> Float,
     enabled: Boolean = true,
     consume: Boolean = false
-) = inspectable(inspectorInfo = debugInspectorInfo {
-    name = "bottomOverPull"
-    properties["onPull"] = onPull
-    properties["onRelease"] = onRelease
-    properties["enabled"] = enabled
-    properties["consume"] = consume
-}) {
-    Modifier.nestedScroll(BottomOverPullNestedScrollConnection(onPull, onRelease, enabled, consume))
-}
+) = then(Modifier.nestedScroll(BottomOverPullNestedScrollConnection(onPull, onRelease, enabled, consume)))
 
 private class TopOverPullNestedScrollConnection(
     private val onPull: (pullDelta: Float) -> Float,
@@ -79,7 +47,7 @@ private class TopOverPullNestedScrollConnection(
 ) : NestedScrollConnection {
     override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset = when {
         !enabled -> Offset.Zero
-        source == NestedScrollSource.Drag && available.y < 0 -> {
+        source == NestedScrollSource.UserInput && available.y < 0 -> {
             val pullConsumed = onPull(available.y)
             if (consume) Offset(0f, pullConsumed) else Offset.Zero
         } // Swiping up
@@ -87,7 +55,7 @@ private class TopOverPullNestedScrollConnection(
     }
     override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset = when {
         !enabled -> Offset.Zero
-        source == NestedScrollSource.Drag && available.y > 0 -> {
+        source == NestedScrollSource.UserInput && available.y > 0 -> {
             val pullConsumed = onPull(available.y)
             if (consume) Offset(0f, pullConsumed) else Offset.Zero
         } // Pulling down
@@ -107,7 +75,7 @@ private class BottomOverPullNestedScrollConnection(
 ) : NestedScrollConnection {
     override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset = when {
         !enabled -> Offset.Zero
-        source == NestedScrollSource.Drag && available.y > 0 -> {
+        source == NestedScrollSource.UserInput && available.y > 0 -> {
             val pullConsumed = onPull(available.y)
             if (consume) Offset(0f, pullConsumed) else Offset.Zero
         } // Swiping down
@@ -115,7 +83,7 @@ private class BottomOverPullNestedScrollConnection(
     }
     override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset = when {
         !enabled -> Offset.Zero
-        source == NestedScrollSource.Drag && available.y < 0 -> {
+        source == NestedScrollSource.UserInput && available.y < 0 -> {
             val pullConsumed = onPull(available.y)
             if (consume) Offset(0f, pullConsumed) else Offset.Zero
         } // Pulling up
