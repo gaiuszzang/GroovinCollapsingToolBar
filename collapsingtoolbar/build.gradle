@@ -60,7 +60,7 @@ publishing {
         collapsingtoolbar(MavenPublication) {
             groupId = 'io.groovin'
             artifactId = 'collapsingtoolbar'
-            version = '1.2.5'
+            version = '1.2.6'
 
             afterEvaluate {
                 from components.release

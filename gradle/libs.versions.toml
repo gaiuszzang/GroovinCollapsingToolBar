@@ -3,7 +3,7 @@ accompanistSystemuicontroller = "0.17.0"
 activityCompose = "1.9.2"
 appcompat = "1.7.0"
 coilCompose = "2.5.0"
-compose-bom = "2024.09.02"
+compose-bom = "2024.09.03"
 constraintlayoutCompose = "1.0.1"
 espresso = "3.6.1"
 junit = "4.13.2"
@@ -11,22 +11,21 @@ androidxJunit = "1.2.1"
 ktx = "1.13.1"
 lifecycle = "2.8.6"
 material3 = "1.3.0"
-navigation = "2.8.1"
+navigation = "2.8.2"
 numberpicker = "1.0.3"
 mavenPublish = "0.29.0"
 
-androidGradlePlugin = "8.5.2"
+androidGradlePlugin = "8.7.0"
 kotlin = "2.0.10"
 
 [libraries]
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
-androidx-compose-ui = { module = "androidx.compose.ui:ui" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
-androidx-compose-material = { module = "androidx.compose.material:material" }
-
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+androidx-compose-material = { group = "androidx.compose.material", name = "material" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "material3" }
 
