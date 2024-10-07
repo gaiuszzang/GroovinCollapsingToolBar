@@ -3,8 +3,6 @@ package io.groovin.collapsingtoolbar.sampleapp.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val LightColorPalette = lightColors(
     primary = Primary,
@@ -40,17 +38,6 @@ fun GroovinTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composabl
         LightColorPalette
     }
 
-    val systemUiController = rememberSystemUiController()
-    SideEffect {
-        systemUiController.setStatusBarColor(
-            color = colors.primary,
-            darkIcons = false
-        )
-        systemUiController.setNavigationBarColor(
-            color = colors.primary,
-            darkIcons = false
-        )
-    }
 
     MaterialTheme(
             colors = colors,

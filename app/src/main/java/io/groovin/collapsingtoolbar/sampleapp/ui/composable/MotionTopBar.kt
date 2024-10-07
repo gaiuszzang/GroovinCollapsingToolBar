@@ -52,6 +52,7 @@ fun MotionTopBar(
             .then(
                 Modifier.background(MaterialTheme.colors.primary)
             )
+            //.statusBarsPadding()
     ) {
         Image(
             painter = painterResource(id = R.drawable.top_bar_background),
