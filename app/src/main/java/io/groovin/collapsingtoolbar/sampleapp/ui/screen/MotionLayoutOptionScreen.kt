@@ -20,7 +20,6 @@ import io.groovin.collapsingtoolbar.sampleapp.ui.composable.Menu
 import io.groovin.collapsingtoolbar.sampleapp.ui.composable.FloatingButton
 import io.groovin.collapsingtoolbar.sampleapp.ui.composable.MotionTopBar
 import io.groovin.collapsingtoolbar.sampleapp.ui.composable.conditional
-import io.groovin.collapsingtoolbar.sampleapp.ui.composable.rememberStatusBarHeight
 import io.groovin.collapsingtoolbar.sampleapp.ui.theme.GroovinTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -36,7 +35,7 @@ fun MotionLayoutOptionScreen(
     val commonData = LocalCommonData.current
     val contentList by remember { mutableStateOf(commonData.getShowRoomContentList()) }
     val lazyListState = rememberLazyListState()
-    val statusBarHeight by rememberStatusBarHeight()
+    val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
     val collapsingToolBarState = rememberCollapsingToolBarState(220.dp, 56.dp, option)
     val floatingButtonVisible by remember { derivedStateOf { lazyListState.firstVisibleItemIndex > 2 } }
     val refreshEnable by remember { derivedStateOf { collapsingToolBarState.progress == 0f } }

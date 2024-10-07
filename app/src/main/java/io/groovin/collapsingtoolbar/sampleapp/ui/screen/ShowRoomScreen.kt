@@ -25,8 +25,7 @@ fun ShowRoomScreen() {
     GroovinTheme {
         Column(
             modifier = Modifier
-                .statusBarsPadding()
-                .navigationBarsPadding()
+                .systemBarsPadding()
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
@@ -39,7 +38,7 @@ fun ShowRoomScreen() {
 
 @Composable
 fun IntroHeader() {
-    Column(modifier = Modifier.padding(10.dp)) {
+    Column(modifier = Modifier.padding(0.dp)) {
         Text(
             text = "Groovin\nCollapsing ToolBar ShowRoom",
             color = MaterialTheme.colors.onSecondary,
@@ -99,7 +98,7 @@ fun SimpleShowRoomDialog(
     onPositiveClick: () -> Unit
 ) {
     val commonData = LocalCommonData.current
-    var listSize by remember { mutableStateOf(commonData.listSize) }
+    var listSize by remember { mutableIntStateOf(commonData.listSize) }
     GroovinOkayCancelDialog(
         onCancelClick = onCancelClick,
         onPositiveClick = onPositiveClick
@@ -133,7 +132,7 @@ fun OptionShowRoomDialog(
     onPositiveClick: (Boolean, Boolean, Boolean, Boolean) -> Unit
 ) {
     val commonData = LocalCommonData.current
-    var listSize by remember { mutableStateOf(commonData.listSize) }
+    var listSize by remember { mutableIntStateOf(commonData.listSize) }
     var isEnterAlwaysCollapsed by remember { mutableStateOf(commonData.isEnterAlwaysCollapsed) }
     var isAutoSnap: Boolean by remember { mutableStateOf(commonData.isAutoSnap) }
     var toolBarScrollable: Boolean by remember { mutableStateOf(commonData.toolBarScrollable) }

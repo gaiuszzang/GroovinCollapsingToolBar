@@ -13,8 +13,9 @@
         android:theme="@style/Theme.Groovin">
         <activity
             android:name="io.groovin.collapsingtoolbar.sampleapp.ui.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true"
-            android:theme="@style/Theme.Groovin.NoActionBar">
+            android:theme="@style/Theme.Groovin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
