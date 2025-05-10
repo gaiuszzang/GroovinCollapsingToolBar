@@ -10,7 +10,7 @@ import androidx.compose.animation.core.animateDecay
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.ScrollScope
@@ -333,10 +333,11 @@ fun CollapsingToolBarLayout(
                 return super.onPostScroll(consumed, available, source)
             }
 
-
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
                 snapAnimationJob = coroutineScope.launch {
                     if (available.y > 0f) {
+                        state.flingY(available.y)
+                    } else if (available.y < 0f && state.progress < 1f) {
                         state.flingY(available.y)
                     }
                     if (state.collapsingOption.isAutoSnap) {
@@ -369,12 +370,12 @@ fun CollapsingToolBarLayout(
         //Content
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
             state.collapsingOption.collapsingWhenTop &&
-            LocalOverscrollConfiguration.current != null) {
+            LocalOverscrollFactory.current != null) {
             // BugFix
             // Since Android 12(S), Overscroll effect consumes scroll event first.
             // So, Disable Overscroll effect in >= Android 12 version case and
             // Use the Internal Stretch Effect with according to configurations.
-            CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+            CompositionLocalProvider(LocalOverscrollFactory provides null) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -388,7 +389,6 @@ fun CollapsingToolBarLayout(
                     CollapsingToolBarLayoutContentScope(state).content()
                 }
             }
-
         } else {
             Box(
                 modifier = Modifier
