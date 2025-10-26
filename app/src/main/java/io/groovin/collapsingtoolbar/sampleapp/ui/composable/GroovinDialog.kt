@@ -5,10 +5,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -23,9 +23,9 @@ import io.groovin.collapsingtoolbar.sampleapp.ui.theme.Black
 fun GroovinDialogSurface(content: @Composable () -> Unit) {
     Surface(
         shape = RoundedCornerShape(16.dp),
-        elevation = 0.dp,
-        color = MaterialTheme.colors.onSurface,
-        contentColor = MaterialTheme.colors.surface,
+        shadowElevation = 0.dp,
+        color = MaterialTheme.colorScheme.onSurface,
+        contentColor = MaterialTheme.colorScheme.surface,
         modifier = Modifier.fillMaxWidth().padding(6.dp)
     ) {
         content()

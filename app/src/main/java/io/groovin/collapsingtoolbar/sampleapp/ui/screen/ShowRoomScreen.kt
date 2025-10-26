@@ -3,7 +3,7 @@ package io.groovin.collapsingtoolbar.sampleapp.ui.screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +41,7 @@ fun IntroHeader() {
     Column(modifier = Modifier.padding(0.dp)) {
         Text(
             text = "Groovin\nCollapsing ToolBar ShowRoom",
-            color = MaterialTheme.colors.onSecondary,
+            color = MaterialTheme.colorScheme.onSecondary,
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
@@ -115,7 +115,7 @@ fun SimpleShowRoomDialog(
             NumberPicker(
                 value = listSize,
                 range = 0..1000,
-                dividersColor = MaterialTheme.colors.primary,
+                dividersColor = MaterialTheme.colorScheme.primary,
                 onValueChange = {
                     listSize = it
                     commonData.listSize = listSize
@@ -153,7 +153,7 @@ fun OptionShowRoomDialog(
             NumberPicker(
                 value = listSize,
                 range = 0..1000,
-                dividersColor = MaterialTheme.colors.primary,
+                dividersColor = MaterialTheme.colorScheme.primary,
                 onValueChange = {
                     listSize = it
                     commonData.listSize = listSize

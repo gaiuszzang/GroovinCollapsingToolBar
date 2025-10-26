@@ -9,10 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.runtime.Composable
@@ -49,10 +49,7 @@ fun MotionTopBar(
         progress = progress,
         modifier = modifier
             .fillMaxSize()
-            .then(
-                Modifier.background(MaterialTheme.colors.primary)
-            )
-            //.statusBarsPadding()
+            .background(MaterialTheme.colorScheme.primary)
     ) {
         Image(
             painter = painterResource(id = R.drawable.top_bar_background),
@@ -71,7 +68,7 @@ fun MotionTopBar(
         )
         Text(
             text = "ShowRoom List",
-            color = MaterialTheme.colors.onSecondary,
+            color = MaterialTheme.colorScheme.onSecondary,
             modifier = Modifier
                 .layoutId(titleId)
                 .wrapContentHeight(),
@@ -90,7 +87,7 @@ fun MotionTopBar(
             Icon(
                 imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                 contentDescription = null,
-                tint = MaterialTheme.colors.onPrimary
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
     }

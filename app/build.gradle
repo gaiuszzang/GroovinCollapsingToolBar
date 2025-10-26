@@ -6,14 +6,14 @@ plugins {
 }
 
 android {
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "io.groovin.collapsingtoolbar.sampleapp"
         minSdk 24
-        targetSdk 35
+        targetSdk 36
         versionCode 6
-        versionName "1.2.3"
+        versionName "1.2.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -42,10 +42,10 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-    lintOptions {
-        disable "NullSafeMutableLiveData"
-    }
     namespace 'io.groovin.sampleapp'
+    lint {
+        disable 'NullSafeMutableLiveData'
+    }
 }
 
 dependencies {
@@ -55,7 +55,7 @@ dependencies {
     implementation platform(libs.androidx.compose.bom)
     implementation libs.androidx.compose.ui
     implementation libs.androidx.compose.ui.preview
-    implementation libs.androidx.compose.material
+    implementation libs.androidx.compose.material.icons.extended
     implementation libs.androidx.compose.material3
     implementation libs.androidx.compose.material3.windowSizeClass
 
