@@ -1,5 +1,6 @@
 ## GroovinCollapsingToolBar
-[![Release](https://jitpack.io/v/io.groovin/GroovinCollapsingToolBar.svg)](https://jitpack.io/#io.groovin/GroovinCollapsingToolBar)  
+[![Maven Central](https://img.shields.io/maven-central/v/io.groovin/collapsingtoolbar)](https://central.sonatype.com/artifact/io.groovin/collapsingtoolbar)
+
 This library offers a Collapsing Tool Bar Layout for Jetpack Compose.
 
 ![sample_main](https://github.com/gaiuszzang/GroovinCollapsingToolBar/assets/15318053/78f030b5-a416-4cfc-9b33-253f3b51ab9e)
