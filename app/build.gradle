@@ -1,48 +1,42 @@
 plugins {
     alias libs.plugins.android.application
-    alias libs.plugins.kotlin.android
     alias libs.plugins.kotlin.android.compose
-    alias libs.plugins.kotlin.kapt
 }
 
 android {
-    compileSdk 36
+    compileSdk = 36
 
     defaultConfig {
-        applicationId "io.groovin.collapsingtoolbar.sampleapp"
-        minSdk 24
-        targetSdk 36
-        versionCode 6
-        versionName "1.2.4"
+        applicationId = "io.groovin.collapsingtoolbar.sampleapp"
+        minSdk = 24
+        targetSdk = 36
+        versionCode = 6
+        versionName = "1.2.4"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
-            useSupportLibrary true
+            useSupportLibrary = true
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = '17'
+    kotlin {
+        jvmToolchain(21)
     }
     buildFeatures {
-        compose true
+        compose = true
     }
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-    namespace 'io.groovin.sampleapp'
+    namespace = 'io.groovin.sampleapp'
     lint {
         disable 'NullSafeMutableLiveData'
     }
