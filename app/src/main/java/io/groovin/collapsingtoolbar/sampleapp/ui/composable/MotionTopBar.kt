@@ -1,7 +1,6 @@
 package io.groovin.collapsingtoolbar.sampleapp.ui.composable
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,9 +16,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
@@ -29,10 +28,8 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import io.groovin.collapsingtoolbar.sampleapp.ui.LocalNavAction
-import io.groovin.sampleapp.R
 
 private const val statusBarId = "motionStatusBar"
-private const val imageId = "motionTopBarImage"
 private const val titleId = "motionTopBarTitle"
 private const val backIconId = "motionTopBarBackIcon"
 
@@ -43,23 +40,17 @@ fun MotionTopBar(
     progress: Float
 ) {
     val navAction = LocalNavAction.current
+    val expandedColor = MaterialTheme.colorScheme.secondary
+    val collapsedColor = MaterialTheme.colorScheme.primary
+    val backgroundColor = lerp(expandedColor, collapsedColor, progress)
     MotionLayout(
         start = startConstraintSet(),
         end = endConstraintSet(),
         progress = progress,
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary)
+            .background(backgroundColor)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.top_bar_background),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .layoutId(imageId),
-            contentScale = ContentScale.Crop,
-            alpha = 1f - progress
-        )
         val fontSize = TextUnit((42f - (18 * progress)), TextUnitType.Sp)
         Box(modifier = Modifier
             .layoutId(statusBarId)
@@ -68,7 +59,7 @@ fun MotionTopBar(
         )
         Text(
             text = "ShowRoom List",
-            color = MaterialTheme.colorScheme.onSecondary,
+            color = Color.White,
             modifier = Modifier
                 .layoutId(titleId)
                 .wrapContentHeight(),
@@ -87,7 +78,7 @@ fun MotionTopBar(
             Icon(
                 imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimary
+                tint = Color.White
             )
         }
     }
@@ -96,22 +87,12 @@ fun MotionTopBar(
 @SuppressLint("Range")
 private fun startConstraintSet() = ConstraintSet {
     val statusBar = createRefFor(statusBarId)
-    val image = createRefFor(imageId)
     val title = createRefFor(titleId)
     val icon = createRefFor(backIconId)
 
-    constrain(image) {
-        top.linkTo(parent.top, 0.dp)
-        bottom.linkTo(parent.bottom, 0.dp)
-        start.linkTo(parent.start, 0.dp)
-        end.linkTo(parent.end, 0.dp)
-    }
-
     constrain(title) {
-        top.linkTo(statusBar.bottom, 0.dp)
-        bottom.linkTo(parent.bottom, 0.dp)
-        start.linkTo(parent.start, 0.dp)
-        end.linkTo(parent.end, 0.dp)
+        bottom.linkTo(parent.bottom, 16.dp)
+        start.linkTo(parent.start, 16.dp)
         alpha = 1f
     }
 
@@ -124,22 +105,14 @@ private fun startConstraintSet() = ConstraintSet {
 @SuppressLint("Range")
 private fun endConstraintSet() = ConstraintSet {
     val statusBar = createRefFor(statusBarId)
-    val image = createRefFor(imageId)
     val title = createRefFor(titleId)
     val backIcon = createRefFor(backIconId)
-
-    constrain(image) {
-        top.linkTo(parent.top, 0.dp)
-        bottom.linkTo(parent.bottom, 0.dp)
-        start.linkTo(parent.start, 0.dp)
-        end.linkTo(parent.end, 0.dp)
-    }
 
     constrain(title) {
         top.linkTo(statusBar.bottom, 0.dp)
         bottom.linkTo(parent.bottom, 0.dp)
         start.linkTo(backIcon.end, 0.dp)
-        alpha = 0.5f
+        alpha = 1f
     }
 
     constrain(backIcon) {

@@ -10,8 +10,8 @@ android {
         applicationId = "io.groovin.collapsingtoolbar.sampleapp"
         minSdk = 24
         targetSdk = 36
-        versionCode = 6
-        versionName = "1.2.4"
+        versionCode = 7
+        versionName = "1.2.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -69,9 +69,6 @@ dependencies {
     implementation libs.accompanist.systemuicontroller
     implementation libs.coil.compose
     implementation(project(':collapsingtoolbar'))
-
-
-    implementation libs.numberpicker
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit

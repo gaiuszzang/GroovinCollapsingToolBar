@@ -13,15 +13,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.groovin.collapsingtoolbar.sampleapp.data.MenuItem
-import io.groovin.collapsingtoolbar.sampleapp.ui.theme.Black
 
 @Composable
 fun Menu(menuItem: MenuItem) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.onSurface,
-            contentColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
         ),
         modifier = Modifier.fillMaxWidth().padding(6.dp),
         onClick = {
@@ -31,7 +30,6 @@ fun Menu(menuItem: MenuItem) {
         Text(
             modifier = Modifier.padding(horizontal = 20.dp, vertical = menuItem.topBottomPadding),
             text = menuItem.title,
-            color = Black,
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold
         )

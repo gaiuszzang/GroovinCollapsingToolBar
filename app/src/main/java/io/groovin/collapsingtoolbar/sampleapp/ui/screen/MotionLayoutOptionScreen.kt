@@ -38,7 +38,8 @@ import kotlinx.coroutines.launch
 fun MotionLayoutOptionScreen(
     option: CollapsingOption,
     toolBarScrollable: Boolean = true,
-    requiredToolBarMaxHeight: Boolean = false
+    requiredToolBarMaxHeight: Boolean = false,
+    pullToRefresh: Boolean = true
 ) {
     val commonData = LocalCommonData.current
     val contentList by remember { mutableStateOf(commonData.getShowRoomContentList()) }
@@ -75,17 +76,28 @@ fun MotionLayoutOptionScreen(
             val scope = rememberCoroutineScope()
             var isRefreshing by remember { mutableStateOf(false) }
             Box(modifier = Modifier.fillMaxSize()) {
-                GroovinPullToRefreshBox(
-                    isRefreshing = isRefreshing,
-                    onRefresh = {
-                        scope.launch {
-                            isRefreshing = true
-                            delay(1500)
-                            isRefreshing = false
+                if (pullToRefresh) {
+                    GroovinPullToRefreshBox(
+                        isRefreshing = isRefreshing,
+                        onRefresh = {
+                            scope.launch {
+                                isRefreshing = true
+                                delay(1500)
+                                isRefreshing = false
+                            }
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            state = lazyListState
+                        ) {
+                            items(contentList) { item ->
+                                Menu(item)
+                            }
                         }
-                    },
-                    modifier = Modifier.fillMaxSize()
-                ) {
+                    }
+                } else {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         state = lazyListState
