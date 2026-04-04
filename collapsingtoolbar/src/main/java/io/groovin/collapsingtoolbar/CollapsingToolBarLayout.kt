@@ -85,9 +85,10 @@ data class ToolBarCollapsedInfo(
 )
 
 class CollapsingToolBarLayoutToolBarScope(
-    private val toolBarState: CollapsingToolBarState,
-    val collapsedInfo: ToolBarCollapsedInfo
+    private val toolBarState: CollapsingToolBarState
 ) {
+    val collapsedInfo: ToolBarCollapsedInfo
+        get() = ToolBarCollapsedInfo(toolBarState.progress, toolBarState.toolBarHeight)
     fun Modifier.toolBarScrollable(): Modifier =
         this.composed {
             scrollable(
@@ -320,7 +321,7 @@ fun CollapsingToolBarLayout(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val collapsingToolBarConfiguration = LocalCollapsingToolBarLayoutConfiguration.current
-    val nestedScrollConnection = remember {
+    val nestedScrollConnection = remember(state) {
         object: NestedScrollConnection {
             private var snapAnimationJob: Job? = null
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
@@ -358,16 +359,17 @@ fun CollapsingToolBarLayout(
             .then(modifier)
     ) {
         //ToolBar
-        val toolBarCollapsedInfo = ToolBarCollapsedInfo(state.progress, state.toolBarHeight)
+        val toolBarScope = remember(state) { CollapsingToolBarLayoutToolBarScope(state) }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(align = Alignment.Top, unbounded = true)
                 .then(if (!updateToolBarHeightManually) Modifier.height(state.toolBarHeight) else Modifier)
         ) {
-            CollapsingToolBarLayoutToolBarScope(state, toolBarCollapsedInfo).toolbar()
+            toolBarScope.toolbar()
         }
         //Content
+        val contentScope = remember(state) { CollapsingToolBarLayoutContentScope(state) }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
             state.collapsingOption.collapsingWhenTop &&
             LocalOverscrollFactory.current != null) {
@@ -386,7 +388,7 @@ fun CollapsingToolBarLayout(
                             bottomStretchEffect()
                         }
                 ) {
-                    CollapsingToolBarLayoutContentScope(state).content()
+                    contentScope.content()
                 }
             }
         } else {
@@ -394,7 +396,7 @@ fun CollapsingToolBarLayout(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                CollapsingToolBarLayoutContentScope(state).content()
+                contentScope.content()
             }
         }
     }
@@ -408,7 +410,7 @@ private inline fun Modifier.conditional(condition : Boolean, modifier : Modifier
     }
 }
 
-private fun Modifier.topStretchEffect(
+internal fun Modifier.topStretchEffect(
     stretchMultiplier: Float = STRETCH_MULTIPLIER
 ) = composed {
     val topOverPullState = rememberTopOverPullState()
@@ -426,13 +428,13 @@ private fun Modifier.topStretchEffect(
     return@composed this
         .topOverPull(topOverPullState)
         .clipToBounds()
-        .graphicsLayer(
-            scaleY = (overStretchScale.value + 1f),
+        .graphicsLayer {
+            scaleY = overStretchScale.value + 1f
             transformOrigin = TransformOrigin(0f, 0f)
-        )
+        }
 }
 
-private fun Modifier.bottomStretchEffect(
+internal fun Modifier.bottomStretchEffect(
     stretchMultiplier: Float = STRETCH_MULTIPLIER
 ) = composed {
     val bottomOverPullState = rememberBottomOverPullState()
@@ -450,10 +452,10 @@ private fun Modifier.bottomStretchEffect(
     return@composed this
         .bottomOverPull(bottomOverPullState)
         .clipToBounds()
-        .graphicsLayer(
-            scaleY = (overStretchScale.value + 1f),
+        .graphicsLayer {
+            scaleY = overStretchScale.value + 1f
             transformOrigin = TransformOrigin(0f, 1f)
-        )
+        }
 }
 
-internal const val STRETCH_MULTIPLIER = 0.000015f
+internal const val STRETCH_MULTIPLIER = 0.00003f

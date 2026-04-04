@@ -3,7 +3,7 @@ accompanistSystemuicontroller = "0.36.0"
 activityCompose = "1.13.0"
 appcompat = "1.7.1"
 coilCompose = "2.7.0"
-compose-bom = "2026.03.00"
+compose-bom = "2026.03.01"
 constraintlayoutCompose = "1.1.1"
 espresso = "3.7.0"
 junit = "4.13.2"
@@ -15,7 +15,7 @@ numberpicker = "1.0.3"
 mavenPublish = "0.36.0"
 
 androidGradlePlugin = "9.1.0"
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 
 [libraries]
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
