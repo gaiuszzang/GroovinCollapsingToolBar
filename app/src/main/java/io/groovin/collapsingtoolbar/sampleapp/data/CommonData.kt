@@ -8,7 +8,7 @@ class CommonData {
     var isAutoSnap: Boolean = false
     var toolBarScrollable: Boolean = true
     var requiredToolBarMaxHeight: Boolean = false
-    var pullToRefresh: Boolean = true
+    var pullToRefresh: Boolean = false
     fun getShowRoomContentList(): List<MenuItem> {
         val list = mutableListOf<MenuItem>()
         for (i in 1..listSize) {

@@ -37,14 +37,14 @@ fun GroovinNavGraph(
                 navArgument("isAutoSnap") { defaultValue = false },
                 navArgument("toolBarScrollable") { defaultValue = false },
                 navArgument("requiredToolBarMaxHeight") { defaultValue = false },
-                navArgument("pullToRefresh") { defaultValue = true },
+                navArgument("pullToRefresh") { defaultValue = false },
             )
         ) {
             val isEnterAlwaysCollapsed = it.arguments?.getBoolean("isEnterAlwaysCollapsed", false) ?: false
             val isAutoSnap = it.arguments?.getBoolean("isAutoSnap", false) ?: false
             val toolBarScrollable = it.arguments?.getBoolean("toolBarScrollable", false) ?: false
             val requiredToolBarMaxHeight = it.arguments?.getBoolean("requiredToolBarMaxHeight", false) ?: false
-            val pullToRefresh = it.arguments?.getBoolean("pullToRefresh", true) ?: true
+            val pullToRefresh = it.arguments?.getBoolean("pullToRefresh", false) ?: false
             val collapsingOption = when (Pair(isEnterAlwaysCollapsed, isAutoSnap)) {
                 false to false -> CollapsingOption.EnterAlways
                 true to false -> CollapsingOption.EnterAlwaysCollapsed

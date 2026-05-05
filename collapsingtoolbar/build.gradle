@@ -13,7 +13,7 @@ version = publicationVersion
 
 android {
     namespace = 'io.groovin.collapsingtoolbar'
-    compileSdk = 36
+    compileSdk = 37
     defaultConfig {
         minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -37,10 +37,10 @@ android {
         }
     }
     lint {
-        targetSdk = 36
+        targetSdk = 37
     }
     testOptions {
-        targetSdk = 36
+        targetSdk = 37
     }
 }
 

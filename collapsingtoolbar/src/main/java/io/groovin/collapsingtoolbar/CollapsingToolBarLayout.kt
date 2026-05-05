@@ -35,6 +35,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.Saver
@@ -136,7 +137,6 @@ class CollapsingToolBarLayoutContentScope(
         val duration = 8L //8ms
         val vectorConverter = Float.VectorConverter
         val vectorAnimationSpec = animationSpec.vectorize(vectorConverter)
-        vectorConverter.convertToVector(0f)
         val durationNanos = vectorAnimationSpec.getDurationNanos(vectorConverter.convertToVector(0f), vectorConverter.convertToVector(value), vectorConverter.convertToVector(0f))
         var playTimeNanos = 0L
         var prevValue = 0f
@@ -166,6 +166,7 @@ class CollapsingToolBarLayoutContentScope(
 
     private fun LazyListState.expectedDistanceTo(index: Int, targetScrollOffset: Int): Int {
         val visibleItems = layoutInfo.visibleItemsInfo
+        if (visibleItems.isEmpty()) return 0
         val averageSize = visibleItems.fastSumBy { it.size } / visibleItems.size
         val indexesDiff = index - firstVisibleItemIndex
         return (averageSize * indexesDiff) + targetScrollOffset - firstVisibleItemScrollOffset
@@ -179,19 +180,20 @@ class CollapsingToolBarLayoutContentScope(
 
 @Stable
 class CollapsingToolBarState(
-    private val density: Density,
+    initialDensity: Density,
     val toolBarMaxHeight: Dp,
     val toolBarMinHeight: Dp,
     val collapsingOption: CollapsingOption
 ) {
+    internal var density: Density by mutableStateOf(initialDensity)
     var progress: Float by mutableFloatStateOf(0f)
         internal set
     var contentOffset: Float by mutableFloatStateOf(0f)
         internal set
     internal var toolbarOffsetHeightPx: Float by mutableFloatStateOf(0f)
 
-    internal val toolBarMaxHeightPx: Int = with(density) { toolBarMaxHeight.roundToPx() }
-    internal val toolBarMinHeightPx: Int = with(density) { toolBarMinHeight.roundToPx() }
+    internal val toolBarMaxHeightPx: Int by derivedStateOf { with(density) { toolBarMaxHeight.roundToPx() } }
+    internal val toolBarMinHeightPx: Int by derivedStateOf { with(density) { toolBarMinHeight.roundToPx() } }
     val toolBarHeight by derivedStateOf {
         toolBarMaxHeight - ((toolBarMaxHeight - toolBarMinHeight) * progress)
     }
@@ -213,7 +215,7 @@ class CollapsingToolBarState(
                 }
             }
             toolbarOffsetHeightPx = (toolbarOffsetHeightPx - diff).coerceIn(0f, toolbarHeightRangePx.toFloat())
-            progress = if (toolbarHeightRangePx > 0) 1f - ((toolbarHeightRangePx - toolbarOffsetHeightPx) / toolbarHeightRangePx) else 0f
+            progress = if (toolbarHeightRangePx > 0) toolbarOffsetHeightPx / toolbarHeightRangePx else 0f
             prevValue = currentValue
         }
     }
@@ -222,7 +224,7 @@ class CollapsingToolBarState(
         val nextToolbarHeightPx = (toolbarOffsetHeightPx - availableY).coerceIn(0f, toolbarHeightRangePx.toFloat())
         val consumedY = toolbarOffsetHeightPx - nextToolbarHeightPx
         toolbarOffsetHeightPx = nextToolbarHeightPx
-        progress = if (toolbarHeightRangePx > 0) 1f - ((toolbarHeightRangePx - toolbarOffsetHeightPx) / toolbarHeightRangePx) else 0f
+        progress = if (toolbarHeightRangePx > 0) toolbarOffsetHeightPx / toolbarHeightRangePx else 0f
         return consumedY
     }
 
@@ -252,44 +254,44 @@ class CollapsingToolBarState(
     }
 
     internal suspend fun flingY(velocityY: Float) {
-        var isDone = false
         contentOffset = 0f
         var prevValue = 0f
-        animateDecay(0f, velocityY, SplineBasedFloatDecayAnimationSpec(density)) { value, _ ->
-            if (!isDone) {
+        try {
+            animateDecay(0f, velocityY, SplineBasedFloatDecayAnimationSpec(density)) { value, _ ->
                 val diff = value - prevValue
                 prevValue = value
                 val consumedOffset = onPreScroll(Offset(0f, diff))
                 onPostScroll(consumedOffset, Offset.Zero)
-                if (consumedOffset.y == 0f) isDone = true
+                if (consumedOffset.y == 0f) throw FlingFinishedSignal()
             }
-        }
+        } catch (_: FlingFinishedSignal) { }
+    }
+
+    private class FlingFinishedSignal : RuntimeException() {
+        override fun fillInStackTrace(): Throwable = this
     }
 
     companion object {
-        val Saver: Saver<CollapsingToolBarState, *> = listSaver(
+        fun Saver(density: Density): Saver<CollapsingToolBarState, *> = listSaver(
             save = {
                 listOf(
-                    it.density.density,
-                    it.density.fontScale,
                     it.toolBarMaxHeight.value,
                     it.toolBarMinHeight.value,
                     CollapsingOption.toIndex(it.collapsingOption),
                     it.progress,
-                    it.contentOffset,
-                    it.toolbarOffsetHeightPx
+                    it.contentOffset
                 )
             },
             restore = {
                 CollapsingToolBarState(
-                    Density(it[0] as Float, it[1] as Float),
-                    Dp(it[2] as Float),
-                    Dp(it[3] as Float),
-                    CollapsingOption.toOption(it[4] as Int)
+                    density,
+                    Dp(it[0] as Float),
+                    Dp(it[1] as Float),
+                    CollapsingOption.toOption(it[2] as Int)
                 ).apply {
-                    progress = it[5] as Float
-                    contentOffset = it[6] as Float
-                    toolbarOffsetHeightPx = it[7] as Float
+                    progress = it[3] as Float
+                    contentOffset = it[4] as Float
+                    toolbarOffsetHeightPx = progress * (toolBarMaxHeightPx - toolBarMinHeightPx)
                 }
             }
         )
@@ -304,9 +306,9 @@ fun rememberCollapsingToolBarState(
     collapsingOption: CollapsingOption = CollapsingOption.EnterAlwaysCollapsed
 ): CollapsingToolBarState {
     val density = LocalDensity.current
-    return rememberSaveable(saver = CollapsingToolBarState.Saver) {
+    return rememberSaveable(saver = CollapsingToolBarState.Saver(density)) {
         CollapsingToolBarState(density, toolBarMaxHeight, toolBarMinHeight, collapsingOption)
-    }
+    }.also { it.density = density }
 }
 
 

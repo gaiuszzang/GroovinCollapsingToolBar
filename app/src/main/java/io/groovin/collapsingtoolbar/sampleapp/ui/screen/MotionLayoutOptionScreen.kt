@@ -39,7 +39,7 @@ fun MotionLayoutOptionScreen(
     option: CollapsingOption,
     toolBarScrollable: Boolean = true,
     requiredToolBarMaxHeight: Boolean = false,
-    pullToRefresh: Boolean = true
+    pullToRefresh: Boolean = false
 ) {
     val commonData = LocalCommonData.current
     val contentList by remember { mutableStateOf(commonData.getShowRoomContentList()) }
